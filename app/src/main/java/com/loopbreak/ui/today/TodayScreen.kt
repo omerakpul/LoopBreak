@@ -20,6 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.loopbreak.R
 import com.loopbreak.domain.model.LoopType
@@ -61,6 +63,9 @@ fun TodayScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    // The app can stay alive past midnight: re-read the date whenever it comes back.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshDay() }
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = screenPadding(contentPadding),
@@ -99,7 +104,17 @@ fun TodayScreen(
                     color = Shad.colors.mutedForeground,
                 )
                 Spacer(Modifier.height(8.dp))
-                RadialHourChart(state.hourly) {
+                val peak = state.hourly.indices.maxByOrNull { state.hourly[it] }
+                    ?.takeIf { state.hourly[it] > 0 }
+                val insight = if (peak != null) {
+                    stringResource(R.string.today_peak, "%02d:00-%02d:00".format(peak, (peak + 1) % 24))
+                } else {
+                    stringResource(R.string.today_score_caption)
+                }
+                RadialHourChart(
+                    state.hourly,
+                    stringResource(R.string.today_chart_desc, state.score, insight),
+                ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             state.score.toString(),
@@ -113,14 +128,8 @@ fun TodayScreen(
                     }
                 }
                 Spacer(Modifier.height(4.dp))
-                val peak = state.hourly.indices.maxByOrNull { state.hourly[it] }
-                    ?.takeIf { state.hourly[it] > 0 }
                 MutedText(
-                    if (peak != null) {
-                        stringResource(R.string.today_peak, "%02d:00-%02d:00".format(peak, (peak + 1) % 24))
-                    } else {
-                        stringResource(R.string.today_score_caption)
-                    },
+                    insight,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                 )
@@ -229,13 +238,13 @@ private fun DayPicker(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        ShadIconButton("‹", onClick = onPrevious)
+        ShadIconButton("‹", stringResource(R.string.day_previous), onClick = onPrevious)
         Text(
             title,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(horizontal = 4.dp),
         )
-        ShadIconButton("›", onClick = onNext, enabled = canGoForward)
+        ShadIconButton("›", stringResource(R.string.day_next), onClick = onNext, enabled = canGoForward)
         Spacer(Modifier.weight(1f))
         ShadButton(
             text = stringResource(if (syncing) R.string.syncing else R.string.action_refresh),

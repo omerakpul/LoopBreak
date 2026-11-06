@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -46,8 +47,9 @@ class HistoryViewModel @Inject constructor(
 
     private val zone = ZoneId.systemDefault()
     private val _rangeDays = MutableStateFlow(7)
+    private val dayTick = MutableStateFlow(0)
 
-    val state: StateFlow<HistoryUiState> = _rangeDays
+    val state: StateFlow<HistoryUiState> = combine(_rangeDays, dayTick) { n, _ -> n }
         .flatMapLatest { n ->
             val today = LocalDate.now(zone)
             val firstDay = today.minusDays(n - 1L)
@@ -59,6 +61,10 @@ class HistoryViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HistoryUiState())
 
     val rangeDays: StateFlow<Int> = _rangeDays.asStateFlow()
+
+    fun refreshDay() {
+        dayTick.value += 1
+    }
 
     fun setRange(days: Int) {
         _rangeDays.value = days

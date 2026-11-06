@@ -89,6 +89,10 @@ class LoopRepository @Inject constructor(
                 settings.setDetectionVersion(DETECTION_VERSION)
             }
             settings.setLastSync(now)
+
+            // Keep the database small: raw events are only needed to recompute recent days.
+            usageDao.deleteBefore(now - EVENT_RETENTION_MS)
+            loopDao.deleteBefore(now - LOOP_RETENTION_MS)
             SyncResult.Done(events.size)
         }
     }
@@ -146,6 +150,8 @@ class LoopRepository @Inject constructor(
 
         const val DAY_MS = 24 * 60 * 60_000L
         private const val FIRST_SYNC_LOOKBACK_MS = 7 * DAY_MS
+        private const val EVENT_RETENTION_MS = 90 * DAY_MS
+        private const val LOOP_RETENTION_MS = 365 * DAY_MS
         private const val SYNC_OVERLAP_MS = 2 * 60_000L
 
         /** Recompute a bit before midnight so a loop that straddles the day boundary is not cut. */

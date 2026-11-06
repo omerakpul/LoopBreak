@@ -31,6 +31,7 @@ private val REFERENCE_SIZE = 280.dp
 @Composable
 fun RadialHourChart(
     values: List<Int>,
+    contentDescription: String,
     modifier: Modifier = Modifier,
     center: @Composable () -> Unit,
 ) {
@@ -40,7 +41,7 @@ fun RadialHourChart(
 
     BoxWithConstraints(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         val side: Dp = min(maxWidth.value, REFERENCE_SIZE.value).dp
-        Box(Modifier.size(side), contentAlignment = Alignment.Center) {
+        Box(Modifier.size(side).describe(contentDescription), contentAlignment = Alignment.Center) {
             Canvas(Modifier.size(side)) {
                 val k = size.width / REFERENCE_SIZE.toPx()
                 val mid = Offset(size.width / 2f, size.height / 2f)

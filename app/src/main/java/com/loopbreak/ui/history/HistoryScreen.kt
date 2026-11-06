@@ -19,6 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.loopbreak.R
 import com.loopbreak.ui.components.BarChart
@@ -46,6 +48,7 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshDay() }
     val weekdays = stringResource(R.string.weekdays_short).split(",")
 
     LazyColumn(
@@ -89,6 +92,7 @@ fun HistoryScreen(
                     values = state.days.map { it.score },
                     axisLabels = listOfNotNull(first?.format(dayFormat), last?.format(dayFormat)),
                     modifier = Modifier.fillMaxWidth(),
+                    contentDescription = stringResource(R.string.history_trend_desc, state.rangeDays, state.total),
                 )
             }
         }
@@ -97,7 +101,12 @@ fun HistoryScreen(
             ShadCard {
                 CardTitle(stringResource(R.string.history_heatmap))
                 Spacer(Modifier.height(16.dp))
-                Heatmap(state.heatmap, weekdays, Modifier.fillMaxWidth())
+                Heatmap(
+                    state.heatmap,
+                    weekdays,
+                    Modifier.fillMaxWidth(),
+                    contentDescription = stringResource(R.string.history_heatmap),
+                )
             }
         }
 

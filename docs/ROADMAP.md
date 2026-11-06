@@ -48,6 +48,15 @@ Durum notu: kod yazıldı ve `./gradlew lintDebug assembleDebug testDebugUnitTes
 - [x] Uygulama ikonu (kırık halka, adaptive + monochrome)
 - [x] Gece yarısını aşan döngüler (yeniden hesaplama gün başından 1 saat önce başlıyor)
 
+## Aşama 5: Sağlamlaştırma (yapıldı)
+
+- [x] Yedekleme kapatıldı (gizlilik açığı: otomatik yedekleme veritabanını buluta alabiliyordu)
+- [x] Erişilebilirlik: düğme ve grafik açıklamaları
+- [x] Gece yarısı sonrası tarih yenileme, veri saklama süresi (90 / 365 gün)
+- [x] Ek birim testleri (özel eşikler, gece yarısı, uzun ping-pong, ayar varsayılanları), toplam 32
+- [x] GitHub Actions CI (`.github/workflows/android.yml`): lint, derleme, test. Henüz çalıştırılmadı, ilk push'ta görülecek.
+- [x] Bildirim emülatörde uçtan uca doğrulandı
+
 ## Fikir havuzu (sıralanmamış)
 
 - Haftalık özet

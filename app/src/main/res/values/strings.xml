@@ -34,6 +34,12 @@
     <string name="debug_resumed">Açıldı</string>
     <string name="debug_paused">Kapandı</string>
     <string name="back">Geri</string>
+    <string name="day_previous">Önceki gün</string>
+    <string name="day_next">Sonraki gün</string>
+    <string name="action_decrease">%1$s: azalt</string>
+    <string name="action_increase">%1$s: artır</string>
+    <string name="today_chart_desc">Saate göre döngü grafiği. Loop skoru %1$d. %2$s</string>
+    <string name="history_trend_desc">Son %1$d günün günlük trend grafiği, toplam skor %2$d</string>
 
     <string name="tab_today">Bugün</string>
     <string name="tab_history">Geçmiş</string>

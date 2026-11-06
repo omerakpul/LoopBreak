@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -57,8 +58,9 @@ class TodayViewModel @Inject constructor(
     private val zone = ZoneId.systemDefault()
     private val _dayOffset = MutableStateFlow(0)
     val dayOffset = _dayOffset.asStateFlow()
+    private val dayTick = MutableStateFlow(0)
 
-    val state: StateFlow<TodayUiState> = _dayOffset
+    val state: StateFlow<TodayUiState> = combine(_dayOffset, dayTick) { offset, _ -> offset }
         .flatMapLatest { offset ->
             val day = LocalDate.now(zone).plusDays(offset.toLong())
             val from = day.atStartOfDay(zone).toInstant().toEpochMilli()
@@ -70,6 +72,11 @@ class TodayViewModel @Inject constructor(
 
     fun previousDay() {
         _dayOffset.value -= 1
+    }
+
+    /** Re-evaluates "today" (e.g. after midnight passed while the app was in the background). */
+    fun refreshDay() {
+        dayTick.value += 1
     }
 
     fun nextDay() {

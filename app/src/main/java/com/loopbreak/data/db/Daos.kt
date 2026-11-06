@@ -26,6 +26,9 @@ interface UsageEventDao {
     @Query("SELECT COUNT(*) FROM usage_events")
     fun observeCount(): Flow<Int>
 
+    @Query("DELETE FROM usage_events WHERE timestamp < :before")
+    suspend fun deleteBefore(before: Long)
+
     @Query("DELETE FROM usage_events")
     suspend fun deleteAll()
 }
@@ -37,6 +40,9 @@ interface LoopEventDao {
 
     @Query("DELETE FROM loop_events WHERE startTime >= :from")
     suspend fun deleteFrom(from: Long)
+
+    @Query("DELETE FROM loop_events WHERE startTime < :before")
+    suspend fun deleteBefore(before: Long)
 
     @Query("DELETE FROM loop_events")
     suspend fun deleteAll()

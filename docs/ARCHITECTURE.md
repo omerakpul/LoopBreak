@@ -25,19 +25,24 @@ Tek modül (`:app`), paketlerle ayrım. MVP için çoklu modül gereksiz yük.
 ```
 com.loopbreak
 ├── data
-│   ├── usage        UsageStatsManager sarmalayıcı, Collector, WorkManager worker
+│   ├── usage        UsageStatsReader, ExcludedPackages, AppLabels, SyncWorker (WorkManager)
 │   ├── db           Room: Database, Dao, Entity
-│   └── settings     DataStore
+│   ├── settings     DataStore: eşikler, hariç liste, bildirim durumu
+│   ├── notify       LoopNotifier (isteğe bağlı nazik hatırlatma)
+│   └── LoopRepository   eşitleme, yeniden hesaplama, veri saklama süresi
 ├── domain
 │   ├── model        UsageEvent, Session, LoopEvent, LoopType
-│   └── detect       LoopDetector, SessionBuilder (saf Kotlin, birim testli)
+│   └── detect       LoopDetector, SessionBuilder, LoopScore, CalibrationStats,
+│                    DetectionConfig (saf Kotlin, birim testli)
+├── di               Hilt modülü (Room)
 └── ui
     ├── onboarding
-    ├── today
-    ├── history
-    ├── settings
-    ├── components   Canvas grafikleri
-    └── theme
+    ├── today        gün seçici, saat halkası, döngü listesi
+    ├── history      trend, ısı haritası
+    ├── settings     eşikler, eşik ipucu, hariç liste, bildirim, veri silme
+    ├── debug        ham olaylar
+    ├── components   Shad bileşenleri, RadialHourChart, BarChart, Heatmap
+    └── theme        shadcn token'ları, tipografi
 ```
 
 Bağımlılık yönü: `ui → domain ← data`. `domain` Android sınıfı içermez.
@@ -98,6 +103,12 @@ Bağımlılık yönü: `ui → domain ← data`. `domain` Android sınıfı içe
 - `INTERNET` **eklenmez**.
 - `POST_NOTIFICATIONS`: yalnızca kullanıcı Ayarlar'dan nazik hatırlatmayı açarsa istenir (Android 13+).
 - Paket görünürlüğü: uygulama adı/ikonunu göstermek için `QUERY_ALL_PACKAGES` ya da `<queries>` gerekir. Play Store dışı olduğu için `QUERY_ALL_PACKAGES` kabul edilebilir.
+
+## Veri yaşam döngüsü ve gizlilik
+
+- **Yedekleme kapalı:** `allowBackup="false"` ve `backup_rules.xml` / `data_extraction_rules.xml` her şeyi dışarıda bırakır. Aksi halde Android otomatik yedeklemesi veritabanını Google Drive'a yükleyebilirdi ve "veri cihazdan çıkmaz" sözü bozulurdu.
+- **Saklama süresi:** Ham olaylar 90 gün, döngü kayıtları 365 gün tutulur; her eşitlemede eskileri silinir.
+- **Gün değişimi:** Bugün ve Geçmiş ekranları uygulama öne her geldiğinde tarihi yeniden okur (gece yarısını aşan oturumlar için).
 
 ## Bilinen riskler
 

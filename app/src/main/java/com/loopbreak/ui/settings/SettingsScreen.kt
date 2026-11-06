@@ -239,13 +239,13 @@ private fun Stepper(label: String, value: Int, unit: String, onChange: (Int) -> 
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-        ShadIconButton("−", onClick = { onChange(value - 1) })
+        ShadIconButton("−", stringResource(R.string.action_decrease, label), onClick = { onChange(value - 1) })
         Text(
             "$value $unit".trim(),
             style = MaterialTheme.typography.titleSmall,
             textAlign = TextAlign.Center,
             modifier = Modifier.width(56.dp),
         )
-        ShadIconButton("+", onClick = { onChange(value + 1) })
+        ShadIconButton("+", stringResource(R.string.action_increase, label), onClick = { onChange(value + 1) })
     }
 }

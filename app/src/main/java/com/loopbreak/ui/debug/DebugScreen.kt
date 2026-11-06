@@ -56,7 +56,7 @@ fun DebugScreen(
     ) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ShadIconButton("‹", onClick = onBack)
+                ShadIconButton("‹", stringResource(R.string.back), onClick = onBack)
                 Spacer(Modifier.width(12.dp))
                 Text(stringResource(R.string.debug_title), style = MaterialTheme.typography.titleLarge)
             }

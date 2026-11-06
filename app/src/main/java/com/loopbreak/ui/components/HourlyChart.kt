@@ -17,11 +17,16 @@ import androidx.compose.ui.unit.dp
 
 /** One bar per value, hand-drawn on a Canvas (see docs/ARCHITECTURE.md). */
 @Composable
-fun BarChart(values: List<Int>, axisLabels: List<String>, modifier: Modifier = Modifier) {
+fun BarChart(
+    values: List<Int>,
+    axisLabels: List<String>,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+) {
     val bar = MaterialTheme.colorScheme.primary
     val track = MaterialTheme.colorScheme.surfaceVariant
 
-    Column(modifier) {
+    Column(modifier.describe(contentDescription)) {
         Canvas(Modifier.fillMaxWidth().height(96.dp)) {
             val max = (values.maxOrNull() ?: 0).coerceAtLeast(1)
             val slot = size.width / values.size.coerceAtLeast(1)

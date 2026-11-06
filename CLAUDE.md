@@ -14,6 +14,8 @@ Kotlin, Jetpack Compose (Material 3), Room, WorkManager, DataStore, Coroutines/F
 - Bağımlılıklar `gradle/libs.versions.toml` üzerinden eklenir; sürümü doğrudan `build.gradle.kts` içine yazma.
 - Room ve Hilt için KSP kullan (kapt değil). KSP sürümü projedeki Kotlin sürümüyle eşleşmeli ve Hilt eklentisi AGP 9 ile uyumlu olmalı. Eklerken derleyip doğrula.
 - `domain` paketi Hilt'e de bağımlı olmasın; `@Inject constructor` yerine bağımlılıkları `data`/`ui` katmanındaki modüllerde bağla.
+- **Yedekleme kapalı kalmalı** (`allowBackup="false"` + boş yedekleme kuralları): kullanım verisi buluta gitmemeli.
+- **Erişilebilirlik:** Yalnızca glif içeren düğmelere (`ShadIconButton`) açıklama ver; grafiklere `describe(...)` ile `contentDescription` ekle.
 - Play Store şimdilik kapsam dışı. Sadece debug APK ile kendi cihazında çalışacak şekilde ilerle.
 - Aşamaları [docs/ROADMAP.md](docs/ROADMAP.md) sırasıyla takip et; bir aşama bittiğinde işaretle.
 

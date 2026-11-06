@@ -23,12 +23,17 @@ import androidx.compose.ui.unit.dp
  * Colour intensity is relative to the busiest cell.
  */
 @Composable
-fun Heatmap(cells: List<List<Int>>, rowLabels: List<String>, modifier: Modifier = Modifier) {
+fun Heatmap(
+    cells: List<List<Int>>,
+    rowLabels: List<String>,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+) {
     val hot = MaterialTheme.colorScheme.primary
     val empty = MaterialTheme.colorScheme.surfaceVariant
     val cellHeight = 16.dp
 
-    Column(modifier) {
+    Column(modifier.describe(contentDescription)) {
         Row {
             Column(Modifier.width(32.dp)) {
                 rowLabels.forEach {

@@ -31,6 +31,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.loopbreak.ui.theme.Shad
@@ -132,10 +135,15 @@ fun ShadButton(
     }
 }
 
-/** Square outline button for single glyphs such as ‹ › − +. */
+/** Describes a visual-only element (chart) to screen readers. */
+fun Modifier.describe(text: String?): Modifier =
+    if (text == null) this else semantics { contentDescription = text }
+
+/** Square outline button for single glyphs such as ‹ › − +. [description] is what screen readers say. */
 @Composable
 fun ShadIconButton(
     glyph: String,
+    description: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -150,7 +158,7 @@ fun ShadIconButton(
         contentColor = c.foreground,
         border = BorderStroke(1.dp, c.input),
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Box(Modifier.clearAndSetSemantics { contentDescription = description }, contentAlignment = Alignment.Center) {
             Text(glyph, style = MaterialTheme.typography.titleMedium)
         }
     }

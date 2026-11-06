@@ -31,6 +31,7 @@ import com.loopbreak.ui.components.ShadBadgeVariant
 import com.loopbreak.ui.components.ShadCard
 import com.loopbreak.ui.components.ShadSeparator
 import com.loopbreak.ui.components.ShadTabs
+import com.loopbreak.ui.components.heroBrush
 import com.loopbreak.ui.screenPadding
 import com.loopbreak.ui.theme.Shad
 import java.time.format.DateTimeFormatter
@@ -61,7 +62,7 @@ fun HistoryScreen(
         }
 
         item {
-            ShadCard {
+            ShadCard(brush = heroBrush()) {
                 Text(
                     stringResource(R.string.history_total),
                     style = MaterialTheme.typography.labelLarge,

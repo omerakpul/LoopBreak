@@ -25,7 +25,9 @@ import com.loopbreak.R
 import com.loopbreak.domain.model.LoopType
 import com.loopbreak.ui.SyncUiState
 import com.loopbreak.ui.components.CardTitle
-import com.loopbreak.ui.components.HourlyChart
+import com.loopbreak.ui.components.RadialHourChart
+import com.loopbreak.ui.components.ShadProgress
+import com.loopbreak.ui.components.heroBrush
 import com.loopbreak.ui.components.MutedText
 import com.loopbreak.ui.components.ShadBadge
 import com.loopbreak.ui.components.ShadBadgeVariant
@@ -90,26 +92,38 @@ fun TodayScreen(
         }
 
         item {
-            ShadCard {
+            ShadCard(brush = heroBrush()) {
                 Text(
-                    stringResource(R.string.today_score_label),
+                    stringResource(R.string.today_hourly),
                     style = MaterialTheme.typography.labelLarge,
                     color = Shad.colors.mutedForeground,
                 )
-                Text(
-                    state.score.toString(),
-                    style = MaterialTheme.typography.displayLarge,
-                    modifier = Modifier.padding(top = 4.dp),
+                Spacer(Modifier.height(8.dp))
+                RadialHourChart(state.hourly) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            state.score.toString(),
+                            style = MaterialTheme.typography.displayLarge,
+                        )
+                        Text(
+                            stringResource(R.string.today_score_label),
+                            style = MaterialTheme.typography.labelLarge,
+                            color = Shad.colors.mutedForeground,
+                        )
+                    }
+                }
+                Spacer(Modifier.height(4.dp))
+                val peak = state.hourly.indices.maxByOrNull { state.hourly[it] }
+                    ?.takeIf { state.hourly[it] > 0 }
+                MutedText(
+                    if (peak != null) {
+                        stringResource(R.string.today_peak, "%02d:00-%02d:00".format(peak, (peak + 1) % 24))
+                    } else {
+                        stringResource(R.string.today_score_caption)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
                 )
-                MutedText(stringResource(R.string.today_score_caption))
-            }
-        }
-
-        item {
-            ShadCard {
-                CardTitle(stringResource(R.string.today_hourly))
-                Spacer(Modifier.height(16.dp))
-                HourlyChart(state.hourly, Modifier.fillMaxWidth())
             }
         }
 
@@ -129,6 +143,7 @@ fun TodayScreen(
             item {
                 ShadCard {
                     CardTitle(stringResource(R.string.today_top_apps))
+                    val top = state.topApps.maxOf { it.total }.coerceAtLeast(1)
                     state.topApps.forEach { app ->
                         Spacer(Modifier.height(12.dp))
                         ShadSeparator()
@@ -142,6 +157,8 @@ fun TodayScreen(
                             }
                             ShadBadge(app.total.toString(), variant = ShadBadgeVariant.Default)
                         }
+                        Spacer(Modifier.height(8.dp))
+                        ShadProgress(app.total.toFloat() / top)
                     }
                 }
             }
@@ -177,7 +194,15 @@ fun TodayScreen(
                                 Text(row.title, style = MaterialTheme.typography.titleSmall)
                                 MutedText(detail)
                             }
-                            ShadBadge(kind, variant = ShadBadgeVariant.Outline)
+                            ShadBadge(
+                                kind,
+                                variant = ShadBadgeVariant.Outline,
+                                dot = when (e.type) {
+                                    LoopType.RE_OPEN -> Shad.colors.primary
+                                    LoopType.QUICK_PEEK -> Shad.colors.warning
+                                    LoopType.PING_PONG -> Shad.colors.violet
+                                },
+                            )
                         }
                     }
                     if (state.loops.size > MAX_EVENT_ROWS) {

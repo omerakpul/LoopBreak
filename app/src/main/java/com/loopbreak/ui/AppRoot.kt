@@ -3,6 +3,7 @@ package com.loopbreak.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -11,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,6 +25,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.loopbreak.R
+import com.loopbreak.ui.components.LoopMark
 import com.loopbreak.ui.components.ShadTabs
 import com.loopbreak.ui.debug.DebugScreen
 import com.loopbreak.ui.history.HistoryScreen
@@ -66,11 +69,17 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
             Column(Modifier.background(Shad.colors.background).statusBarsPadding()) {
                 if (selectedTab >= 0) {
                     Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 4.dp)) {
-                        Text(
-                            stringResource(R.string.app_name),
-                            style = MaterialTheme.typography.titleLarge,
-                            modifier = Modifier.padding(bottom = 12.dp),
-                        )
+                        Row(
+                            Modifier.padding(bottom = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            LoopMark(size = 30.dp)
+                            Text(
+                                stringResource(R.string.app_name),
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(start = 8.dp),
+                            )
+                        }
                         ShadTabs(
                             titles = tabTitles.map { stringResource(it) },
                             selected = selectedTab,

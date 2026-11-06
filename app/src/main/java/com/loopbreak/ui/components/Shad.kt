@@ -1,12 +1,14 @@
 package com.loopbreak.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,17 +23,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.loopbreak.ui.theme.Shad
+import kotlin.math.cos
+import kotlin.math.sin
 
 /* shadcn/ui building blocks (ui.shadcn.com/docs/components) for Compose. */
 
-/** Card: 1dp border, rounded-xl, no elevation. */
+/** A soft vertical wash of the brand colour, for hero cards. */
+@Composable
+fun heroBrush(): Brush {
+    val c = Shad.colors
+    return Brush.verticalGradient(listOf(c.primary.copy(alpha = 0.18f), c.card))
+}
+
+/** Card: 1dp border, rounded-xl, no elevation. Pass [brush] for a tinted hero card. */
 @Composable
 fun ShadCard(
     modifier: Modifier = Modifier,
+    brush: Brush? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val c = Shad.colors
@@ -42,7 +61,8 @@ fun ShadCard(
         contentColor = c.foreground,
         border = BorderStroke(1.dp, c.border),
     ) {
-        Column(Modifier.padding(16.dp), content = content)
+        val inner = if (brush != null) Modifier.background(brush) else Modifier
+        Column(inner.padding(16.dp), content = content)
     }
 }
 
@@ -143,6 +163,7 @@ fun ShadBadge(
     text: String,
     modifier: Modifier = Modifier,
     variant: ShadBadgeVariant = ShadBadgeVariant.Secondary,
+    dot: Color? = null,
 ) {
     val c = Shad.colors
     val (container, content, border) = when (variant) {
@@ -157,11 +178,72 @@ fun ShadBadge(
         contentColor = content,
         border = border,
     ) {
-        Text(
-            text,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
+        Row(
+            Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (dot != null) {
+                Box(Modifier.padding(end = 6.dp).size(7.dp).clip(RoundedCornerShape(50)).background(dot))
+            }
+            Text(text, style = MaterialTheme.typography.labelMedium)
+        }
+    }
+}
+
+/** Thin progress bar: muted track, brand fill. */
+@Composable
+fun ShadProgress(fraction: Float, modifier: Modifier = Modifier, color: Color = Shad.colors.primary) {
+    Box(
+        modifier
+            .fillMaxWidth()
+            .height(5.dp)
+            .clip(RoundedCornerShape(50))
+            .background(Shad.colors.muted),
+    ) {
+        Box(
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth(fraction.coerceIn(0.02f, 1f))
+                .clip(RoundedCornerShape(50))
+                .background(color),
         )
+    }
+}
+
+/** The app mark: a ring with a gap at the top and an arrowhead, i.e. a loop being broken. */
+@Composable
+fun LoopMark(size: androidx.compose.ui.unit.Dp, modifier: Modifier = Modifier, color: Color = Shad.colors.primary) {
+    Canvas(modifier.size(size)) {
+        val s = this.size.minDimension
+        val radius = s * 0.36f
+        val stroke = s * 0.11f
+        val mid = Offset(s / 2f, s / 2f)
+        drawArc(
+            color = color,
+            startAngle = -60f,
+            sweepAngle = 300f,
+            useCenter = false,
+            topLeft = Offset(mid.x - radius, mid.y - radius),
+            size = Size(radius * 2, radius * 2),
+            style = Stroke(width = stroke, cap = StrokeCap.Round),
+        )
+        // Arrowhead at the end of the arc (240 deg), pointing along the clockwise tangent.
+        val end = Math.toRadians(240.0)
+        val tip0 = Offset(mid.x + radius * cos(end).toFloat(), mid.y + radius * sin(end).toFloat())
+        val tangent = Offset((-sin(end)).toFloat(), cos(end).toFloat())
+        val normal = Offset(-tangent.y, tangent.x)
+        val head = s * 0.2f
+        val tip = tip0 + tangent * (head * 0.9f)
+        val b1 = tip0 + normal * (head * 0.55f)
+        val b2 = tip0 - normal * (head * 0.55f)
+        val path = Path().apply {
+            moveTo(tip.x, tip.y)
+            lineTo(b1.x, b1.y)
+            lineTo(b2.x, b2.y)
+            close()
+        }
+        drawPath(path, color)
+        drawPath(path, color, style = Stroke(width = stroke * 0.3f, join = StrokeJoin.Round))
     }
 }
 

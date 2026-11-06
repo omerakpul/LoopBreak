@@ -11,6 +11,7 @@
     <string name="more_items">ve %1$d tane daha</string>
     <string name="syncing">Eşitleniyor…</string>
     <string name="sync_failed">Eşitleme başarısız oldu. Yenile’ye dokunarak tekrar dene.</string>
+    <string name="today_peak">En yoğun saat: %1$s</string>
     <string name="today_score_label">Loop skoru</string>
     <string name="today_score_caption">tekrar dönüş + refleks açma</string>
     <string name="today_hourly">Saate göre döngüler</string>

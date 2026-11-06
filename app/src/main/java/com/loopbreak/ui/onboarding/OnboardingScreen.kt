@@ -22,9 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.loopbreak.R
 import com.loopbreak.ui.components.CardDescription
+import com.loopbreak.ui.components.LoopMark
 import com.loopbreak.ui.components.MutedText
 import com.loopbreak.ui.components.ShadButton
 import com.loopbreak.ui.components.ShadCard
+import com.loopbreak.ui.components.heroBrush
 
 @Composable
 fun OnboardingScreen(modifier: Modifier = Modifier) {
@@ -34,7 +36,9 @@ fun OnboardingScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ShadCard {
+        ShadCard(brush = heroBrush()) {
+            LoopMark(size = 56.dp)
+            Spacer(Modifier.height(16.dp))
             Text(stringResource(R.string.onboarding_title), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(8.dp))
             CardDescription(stringResource(R.string.onboarding_body))

@@ -49,7 +49,7 @@ Bağımlılık yönü: `ui → domain ← data`. `domain` Android sınıfı içe
 | Veri kaynağı | `UsageStatsManager.queryEvents()` | Uygulama bazında ön plan/arka plan olaylarını verir, `AccessibilityService`'ten çok daha hafif ve az müdahaleci. |
 | Kalıcılık | Room | Sistem olayları yalnızca birkaç gün saklıyor; geçmiş ve trend için kendi kopyamız şart. |
 | Arka plan | WorkManager periyodik iş (~15 dk) | Pil dostu, yeniden başlatmadan sağ çıkar. Foreground service'e gerek yok, çünkü olaylar sonradan sorgulanabilir. |
-| UI | Compose + Material 3 | Proje zaten Compose ile kurulu. |
+| UI | Compose + Material 3 | Proje zaten Compose ile kurulu. Görünüm shadcn/ui token'ları ve bileşenleriyle (`ShadColors`, `Shad.kt`) özelleştirilmiş: zinc paleti, kenarlıklı kartlar, pill sekmeler, açık/koyu tema. |
 | Grafik | Elle Canvas | Zaman çizelgesi ve ısı haritası basit; kütüphane bağımlılığı değmez. |
 | DI | Hilt | ViewModel, Room DAO'ları ve WorkManager worker'ı (`@HiltWorker`) için standart çözüm. Test sırasında bağımlılıkları değiştirmeyi kolaylaştırır. Gerekli artifact'lar: `hilt-android`, `hilt-compiler` (KSP), `hilt-navigation-compose`, `hilt-work`. |
 | Ayarlar | DataStore | SharedPreferences'ın modern karşılığı, Flow ile uyumlu. |

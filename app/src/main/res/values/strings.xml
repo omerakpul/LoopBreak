@@ -8,6 +8,7 @@
 
     <string name="action_refresh">Yenile</string>
     <string name="action_raw_events">Ham olaylar</string>
+    <string name="more_items">ve %1$d tane daha</string>
     <string name="syncing">Eşitleniyor…</string>
     <string name="sync_failed">Eşitleme başarısız oldu. Yenile’ye dokunarak tekrar dene.</string>
     <string name="today_score_label">Loop skoru</string>

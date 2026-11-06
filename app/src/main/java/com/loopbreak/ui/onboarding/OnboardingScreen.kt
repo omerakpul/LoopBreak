@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,27 +21,31 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.loopbreak.R
+import com.loopbreak.ui.components.CardDescription
+import com.loopbreak.ui.components.MutedText
+import com.loopbreak.ui.components.ShadButton
+import com.loopbreak.ui.components.ShadCard
 
 @Composable
 fun OnboardingScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = 24.dp),
+        modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(stringResource(R.string.onboarding_title), style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(16.dp))
-        Text(stringResource(R.string.onboarding_body), style = MaterialTheme.typography.bodyLarge)
-        Spacer(Modifier.height(12.dp))
-        Text(
-            stringResource(R.string.onboarding_privacy),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(32.dp))
-        Button(onClick = { openUsageAccessSettings(context) }) {
-            Text(stringResource(R.string.onboarding_button))
+        ShadCard {
+            Text(stringResource(R.string.onboarding_title), style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(8.dp))
+            CardDescription(stringResource(R.string.onboarding_body))
+            Spacer(Modifier.height(12.dp))
+            MutedText(stringResource(R.string.onboarding_privacy))
+            Spacer(Modifier.height(20.dp))
+            ShadButton(
+                text = stringResource(R.string.onboarding_button),
+                onClick = { openUsageAccessSettings(context) },
+                modifier = Modifier.fillMaxWidth(),
+            )
         }
     }
 }

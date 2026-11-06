@@ -9,18 +9,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,11 +30,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.loopbreak.R
+import com.loopbreak.ui.components.CardDescription
+import com.loopbreak.ui.components.CardTitle
+import com.loopbreak.ui.components.MutedText
+import com.loopbreak.ui.components.ShadButton
+import com.loopbreak.ui.components.ShadButtonVariant
+import com.loopbreak.ui.components.ShadCard
+import com.loopbreak.ui.components.ShadIconButton
+import com.loopbreak.ui.components.ShadSeparator
+import com.loopbreak.ui.screenPadding
+import com.loopbreak.ui.theme.Shad
 
 @Composable
 fun SettingsScreen(
@@ -51,122 +65,140 @@ fun SettingsScreen(
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            end = 16.dp,
-            top = contentPadding.calculateTopPadding() + 8.dp,
-            bottom = contentPadding.calculateBottomPadding() + 24.dp,
-        ),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = screenPadding(contentPadding),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item { Header(stringResource(R.string.settings_thresholds)) }
         item {
-            Stepper(
-                label = stringResource(R.string.settings_re_open_count),
-                value = s.reOpenMinCount,
-                unit = "",
-                onChange = viewModel::setReOpenMinCount,
-            )
-        }
-        item {
-            Stepper(
-                label = stringResource(R.string.settings_re_open_window),
-                value = s.reOpenWindowMin,
-                unit = stringResource(R.string.unit_min),
-                onChange = viewModel::setReOpenWindowMin,
-            )
-        }
-        item {
-            Stepper(
-                label = stringResource(R.string.settings_quick_peek),
-                value = s.quickPeekMaxSec,
-                unit = stringResource(R.string.unit_sec),
-                onChange = viewModel::setQuickPeekMaxSec,
-            )
+            ShadCard {
+                CardTitle(stringResource(R.string.settings_thresholds))
+                Spacer(Modifier.height(8.dp))
+                Stepper(
+                    label = stringResource(R.string.settings_re_open_count),
+                    value = s.reOpenMinCount,
+                    unit = "",
+                    onChange = viewModel::setReOpenMinCount,
+                )
+                ShadSeparator()
+                Stepper(
+                    label = stringResource(R.string.settings_re_open_window),
+                    value = s.reOpenWindowMin,
+                    unit = stringResource(R.string.unit_min),
+                    onChange = viewModel::setReOpenWindowMin,
+                )
+                ShadSeparator()
+                Stepper(
+                    label = stringResource(R.string.settings_quick_peek),
+                    value = s.quickPeekMaxSec,
+                    unit = stringResource(R.string.unit_sec),
+                    onChange = viewModel::setQuickPeekMaxSec,
+                )
+            }
         }
 
         state.calibration?.takeIf { it.sessionCount > 0 }?.let { stats ->
-            item { Header(stringResource(R.string.settings_hint_title)) }
             item {
-                val parts = stats.shorterThanSec.entries.map {
-                    stringResource(R.string.settings_hint_shorter, it.key, it.value)
+                ShadCard {
+                    CardTitle(stringResource(R.string.settings_hint_title))
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        stringResource(R.string.settings_hint_sessions, stats.sessionCount),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    val shorter = stats.shorterThanSec.entries.map {
+                        stringResource(R.string.settings_hint_shorter, it.key, it.value)
+                    }
+                    MutedText(shorter.joinToString("   ·   "))
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        stringResource(R.string.settings_hint_returns),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    val within = stats.returnWithinMin.entries.map {
+                        stringResource(R.string.settings_hint_within, it.key, it.value)
+                    }
+                    MutedText(within.joinToString("   ·   "))
+                    Spacer(Modifier.height(12.dp))
+                    MutedText(stringResource(R.string.settings_hint_body))
                 }
-                Text(
-                    stringResource(R.string.settings_hint_sessions, stats.sessionCount) +
-                        "\n" + parts.joinToString("  ·  "),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-            item {
-                val parts = stats.returnWithinMin.entries.map {
-                    stringResource(R.string.settings_hint_within, it.key, it.value)
-                }
-                Text(
-                    stringResource(R.string.settings_hint_returns) +
-                        "\n" + parts.joinToString("  ·  "),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-            item {
-                Text(
-                    stringResource(R.string.settings_hint_body),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
             }
         }
 
-        item { Header(stringResource(R.string.settings_notifications)) }
         item {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(stringResource(R.string.settings_notify_title), style = MaterialTheme.typography.bodyLarge)
-                    Text(
-                        stringResource(R.string.settings_notify_body),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+            ShadCard {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        CardTitle(stringResource(R.string.settings_notify_title))
+                        CardDescription(stringResource(R.string.settings_notify_body))
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Switch(
+                        checked = s.notificationsEnabled,
+                        onCheckedChange = { enable ->
+                            if (enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !viewModel.canPostNotifications()) {
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            } else {
+                                viewModel.setNotificationsEnabled(enable)
+                            }
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Shad.colors.primaryForeground,
+                            checkedTrackColor = Shad.colors.primary,
+                            checkedBorderColor = Color.Transparent,
+                            uncheckedThumbColor = Shad.colors.foreground,
+                            uncheckedTrackColor = Shad.colors.input,
+                            uncheckedBorderColor = Color.Transparent,
+                        ),
                     )
                 }
-                Switch(
-                    checked = s.notificationsEnabled,
-                    onCheckedChange = { enable ->
-                        if (enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !viewModel.canPostNotifications()) {
-                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        } else {
-                            viewModel.setNotificationsEnabled(enable)
-                        }
-                    },
+            }
+        }
+
+        item {
+            ShadCard {
+                CardTitle(stringResource(R.string.settings_excluded))
+                CardDescription(stringResource(R.string.settings_excluded_hint))
+                state.candidates.forEach { app ->
+                    Spacer(Modifier.height(8.dp))
+                    ShadSeparator()
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { viewModel.setExcluded(app.packageName, !app.excluded) }
+                            .padding(top = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Checkbox(
+                            checked = app.excluded,
+                            onCheckedChange = { viewModel.setExcluded(app.packageName, it) },
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = Shad.colors.primary,
+                                checkmarkColor = Shad.colors.primaryForeground,
+                                uncheckedColor = Shad.colors.input,
+                            ),
+                        )
+                        Text(app.label, style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            }
+        }
+
+        item {
+            ShadCard {
+                CardTitle(stringResource(R.string.settings_data))
+                Spacer(Modifier.height(12.dp))
+                ShadButton(
+                    text = stringResource(R.string.action_raw_events),
+                    onClick = onOpenDebug,
+                    variant = ShadButtonVariant.Outline,
+                    modifier = Modifier.fillMaxWidth(),
                 )
-            }
-        }
-
-        item { Header(stringResource(R.string.settings_excluded)) }
-        item {
-            Text(
-                stringResource(R.string.settings_excluded_hint),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        items(state.candidates, key = { it.packageName }) { app ->
-            Row(
-                Modifier.fillMaxWidth().clickable { viewModel.setExcluded(app.packageName, !app.excluded) },
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Checkbox(checked = app.excluded, onCheckedChange = { viewModel.setExcluded(app.packageName, it) })
-                Text(app.label, style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-
-        item { Header(stringResource(R.string.settings_data)) }
-        item {
-            OutlinedButton(onClick = onOpenDebug, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.action_raw_events))
-            }
-        }
-        item {
-            OutlinedButton(onClick = { confirmDelete = true }, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.settings_delete))
+                Spacer(Modifier.height(8.dp))
+                ShadButton(
+                    text = stringResource(R.string.settings_delete),
+                    onClick = { confirmDelete = true },
+                    variant = ShadButtonVariant.Destructive,
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
     }
@@ -174,36 +206,46 @@ fun SettingsScreen(
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
+            containerColor = Shad.colors.card,
+            titleContentColor = Shad.colors.foreground,
+            textContentColor = Shad.colors.mutedForeground,
             title = { Text(stringResource(R.string.settings_delete)) },
             text = { Text(stringResource(R.string.settings_delete_confirm)) },
             confirmButton = {
-                TextButton(onClick = {
-                    confirmDelete = false
-                    viewModel.deleteAllData()
-                }) { Text(stringResource(R.string.settings_delete_yes)) }
+                ShadButton(
+                    text = stringResource(R.string.settings_delete_yes),
+                    onClick = {
+                        confirmDelete = false
+                        viewModel.deleteAllData()
+                    },
+                    variant = ShadButtonVariant.Destructive,
+                )
             },
             dismissButton = {
-                TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.cancel)) }
+                ShadButton(
+                    text = stringResource(R.string.cancel),
+                    onClick = { confirmDelete = false },
+                    variant = ShadButtonVariant.Outline,
+                )
             },
         )
     }
 }
 
 @Composable
-private fun Header(text: String) {
-    Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 16.dp))
-}
-
-@Composable
 private fun Stepper(label: String, value: Int, unit: String, onChange: (Int) -> Unit) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Text(label, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-        OutlinedButton(onClick = { onChange(value - 1) }) { Text("−") }
+    Row(
+        Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+        ShadIconButton("−", onClick = { onChange(value - 1) })
         Text(
             "$value $unit".trim(),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(horizontal = 12.dp),
+            style = MaterialTheme.typography.titleSmall,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.width(56.dp),
         )
-        OutlinedButton(onClick = { onChange(value + 1) }) { Text("+") }
+        ShadIconButton("+", onClick = { onChange(value + 1) })
     }
 }

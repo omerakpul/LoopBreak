@@ -17,6 +17,10 @@ Kotlin, Jetpack Compose (Material 3), Room, WorkManager, DataStore, Coroutines/F
 - Play Store şimdilik kapsam dışı. Sadece debug APK ile kendi cihazında çalışacak şekilde ilerle.
 - Aşamaları [docs/ROADMAP.md](docs/ROADMAP.md) sırasıyla takip et; bir aşama bittiğinde işaretle.
 
+## Tasarım (shadcn/ui)
+
+Arayüz ui.shadcn.com tasarım dilini izler (zinc paleti). Renk token'ları `ui/theme/Color.kt` içinde (`ShadColors`, `Shad.colors`), bileşenler `ui/components/Shad.kt` içinde (`ShadCard`, `ShadButton`, `ShadIconButton`, `ShadBadge`, `ShadTabs`, `ShadSeparator`). Yeni ekranlarda Material bileşenlerini doğrudan kullanmak yerine bunları kullan; dinamik renk kapalı, kartlar gölgesiz ve 1dp kenarlıklı.
+
 ## Sürüm notları
 
 - `compileSdk = 37`: `core-ktx`, navigation ve lifecycle'ın güncel sürümleri bunu istiyor (`targetSdk` 36 kalır).

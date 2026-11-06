@@ -4,33 +4,47 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.loopbreak.R
 import com.loopbreak.domain.model.LoopType
 import com.loopbreak.ui.SyncUiState
+import com.loopbreak.ui.components.CardTitle
 import com.loopbreak.ui.components.HourlyChart
+import com.loopbreak.ui.components.MutedText
+import com.loopbreak.ui.components.ShadBadge
+import com.loopbreak.ui.components.ShadBadgeVariant
+import com.loopbreak.ui.components.ShadButton
+import com.loopbreak.ui.components.ShadButtonVariant
+import com.loopbreak.ui.components.ShadCard
+import com.loopbreak.ui.components.ShadIconButton
+import com.loopbreak.ui.components.ShadSeparator
+import com.loopbreak.ui.screenPadding
+import com.loopbreak.ui.theme.Shad
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 private val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+
+/** The event list is capped so one card never grows into hundreds of rows. */
+private const val MAX_EVENT_ROWS = 50
 
 private fun formatTime(ms: Long): String =
     timeFormat.format(Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()))
@@ -47,13 +61,8 @@ fun TodayScreen(
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(
-            start = 16.dp,
-            end = 16.dp,
-            top = contentPadding.calculateTopPadding() + 8.dp,
-            bottom = contentPadding.calculateBottomPadding() + 24.dp,
-        ),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = screenPadding(contentPadding),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
             DayPicker(
@@ -69,61 +78,113 @@ fun TodayScreen(
                 onRefresh = onRefresh,
             )
         }
+
         if (sync.failed) {
             item {
                 Text(
                     stringResource(R.string.sync_failed),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error,
+                    color = Shad.colors.destructive,
                 )
             }
         }
-        item { ScoreCard(state.score) }
-        item { SectionTitle(stringResource(R.string.today_hourly)) }
-        item { HourlyChart(state.hourly, Modifier.fillMaxWidth()) }
+
+        item {
+            ShadCard {
+                Text(
+                    stringResource(R.string.today_score_label),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Shad.colors.mutedForeground,
+                )
+                Text(
+                    state.score.toString(),
+                    style = MaterialTheme.typography.displayLarge,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+                MutedText(stringResource(R.string.today_score_caption))
+            }
+        }
+
+        item {
+            ShadCard {
+                CardTitle(stringResource(R.string.today_hourly))
+                Spacer(Modifier.height(16.dp))
+                HourlyChart(state.hourly, Modifier.fillMaxWidth())
+            }
+        }
 
         if (state.loaded && state.loops.isEmpty()) {
             item {
-                Text(
-                    stringResource(R.string.today_empty),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 16.dp),
-                )
+                ShadCard {
+                    MutedText(
+                        stringResource(R.string.today_empty),
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
             }
         }
 
         if (state.topApps.isNotEmpty()) {
-            item { SectionTitle(stringResource(R.string.today_top_apps)) }
-            items(state.topApps, key = { "app-" + it.packageName }) { app ->
-                ListRow(
-                    title = app.label,
-                    detail = stringResource(R.string.top_app_detail, app.returns, app.peeks, app.pingPongs),
-                )
+            item {
+                ShadCard {
+                    CardTitle(stringResource(R.string.today_top_apps))
+                    state.topApps.forEach { app ->
+                        Spacer(Modifier.height(12.dp))
+                        ShadSeparator()
+                        Spacer(Modifier.height(12.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(app.label, style = MaterialTheme.typography.titleSmall)
+                                MutedText(
+                                    stringResource(R.string.top_app_detail, app.returns, app.peeks, app.pingPongs),
+                                )
+                            }
+                            ShadBadge(app.total.toString(), variant = ShadBadgeVariant.Default)
+                        }
+                    }
+                }
             }
         }
 
         if (state.loops.isNotEmpty()) {
-            item { SectionTitle(stringResource(R.string.today_events)) }
-            items(state.loops, key = { "loop-" + it.event.startTime + it.event.type + it.event.packageName }) { row ->
-                val e = row.event
-                val kind = when (e.type) {
-                    LoopType.RE_OPEN -> stringResource(R.string.loop_type_re_open)
-                    LoopType.QUICK_PEEK -> stringResource(R.string.loop_type_quick_peek)
-                    LoopType.PING_PONG -> stringResource(R.string.loop_type_ping_pong)
+            item {
+                ShadCard {
+                    CardTitle(stringResource(R.string.today_events))
+                    state.loops.take(MAX_EVENT_ROWS).forEach { row ->
+                        val e = row.event
+                        val kind = when (e.type) {
+                            LoopType.RE_OPEN -> stringResource(R.string.loop_type_re_open)
+                            LoopType.QUICK_PEEK -> stringResource(R.string.loop_type_quick_peek)
+                            LoopType.PING_PONG -> stringResource(R.string.loop_type_ping_pong)
+                        }
+                        val detail = when (e.type) {
+                            LoopType.RE_OPEN -> stringResource(
+                                R.string.loop_detail_re_open, e.count, formatTime(e.startTime), formatTime(e.endTime),
+                            )
+                            LoopType.QUICK_PEEK -> stringResource(
+                                R.string.loop_detail_quick_peek, formatTime(e.startTime), (e.endTime - e.startTime) / 1000,
+                            )
+                            LoopType.PING_PONG -> stringResource(
+                                R.string.loop_detail_ping_pong, e.count, formatTime(e.startTime), formatTime(e.endTime),
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        ShadSeparator()
+                        Spacer(Modifier.height(12.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(Modifier.weight(1f)) {
+                                Text(row.title, style = MaterialTheme.typography.titleSmall)
+                                MutedText(detail)
+                            }
+                            ShadBadge(kind, variant = ShadBadgeVariant.Outline)
+                        }
+                    }
+                    if (state.loops.size > MAX_EVENT_ROWS) {
+                        Spacer(Modifier.height(12.dp))
+                        MutedText(stringResource(R.string.more_items, state.loops.size - MAX_EVENT_ROWS))
+                    }
                 }
-                val detail = when (e.type) {
-                    LoopType.RE_OPEN -> stringResource(
-                        R.string.loop_detail_re_open, e.count, formatTime(e.startTime), formatTime(e.endTime),
-                    )
-                    LoopType.QUICK_PEEK -> stringResource(
-                        R.string.loop_detail_quick_peek, formatTime(e.startTime), (e.endTime - e.startTime) / 1000,
-                    )
-                    LoopType.PING_PONG -> stringResource(
-                        R.string.loop_detail_ping_pong, e.count, formatTime(e.startTime), formatTime(e.endTime),
-                    )
-                }
-                ListRow(title = "${row.title} · $kind", detail = detail)
             }
         }
     }
@@ -138,46 +199,24 @@ private fun DayPicker(
     syncing: Boolean,
     onRefresh: () -> Unit,
 ) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        TextButton(onClick = onPrevious) { Text("‹") }
-        Text(title, style = MaterialTheme.typography.titleLarge)
-        TextButton(onClick = onNext, enabled = canGoForward) { Text("›") }
-        Row(Modifier.weight(1f), horizontalArrangement = Arrangement.End) {
-            TextButton(onClick = onRefresh, enabled = !syncing) {
-                Text(stringResource(if (syncing) R.string.syncing else R.string.action_refresh))
-            }
-        }
-    }
-}
-
-@Composable
-private fun ScoreCard(score: Int) {
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(20.dp)) {
-            Text(stringResource(R.string.today_score_label), style = MaterialTheme.typography.labelLarge)
-            Text(score.toString(), style = MaterialTheme.typography.displayLarge)
-            Text(
-                stringResource(R.string.today_score_caption),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-    }
-}
-
-@Composable
-private fun SectionTitle(text: String) {
-    Text(text, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
-}
-
-@Composable
-private fun ListRow(title: String, detail: String) {
-    Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-        Text(title, style = MaterialTheme.typography.bodyLarge)
+    Row(
+        Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        ShadIconButton("‹", onClick = onPrevious)
         Text(
-            detail,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            title,
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 4.dp),
+        )
+        ShadIconButton("›", onClick = onNext, enabled = canGoForward)
+        Spacer(Modifier.weight(1f))
+        ShadButton(
+            text = stringResource(if (syncing) R.string.syncing else R.string.action_refresh),
+            onClick = onRefresh,
+            variant = ShadButtonVariant.Outline,
+            enabled = !syncing,
         )
     }
 }

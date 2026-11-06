@@ -1,17 +1,19 @@
 package com.loopbreak.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -21,10 +23,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.loopbreak.R
+import com.loopbreak.ui.components.ShadTabs
 import com.loopbreak.ui.debug.DebugScreen
 import com.loopbreak.ui.history.HistoryScreen
 import com.loopbreak.ui.onboarding.OnboardingScreen
 import com.loopbreak.ui.settings.SettingsScreen
+import com.loopbreak.ui.theme.Shad
 import com.loopbreak.ui.today.TodayScreen
 
 private const val ROUTE_TODAY = "today"
@@ -32,13 +36,8 @@ private const val ROUTE_HISTORY = "history"
 private const val ROUTE_SETTINGS = "settings"
 private const val ROUTE_DEBUG = "debug"
 
-private data class Tab(val route: String, val titleRes: Int)
-
-private val tabs = listOf(
-    Tab(ROUTE_TODAY, R.string.tab_today),
-    Tab(ROUTE_HISTORY, R.string.tab_history),
-    Tab(ROUTE_SETTINGS, R.string.tab_settings),
-)
+private val tabRoutes = listOf(ROUTE_TODAY, ROUTE_HISTORY, ROUTE_SETTINGS)
+private val tabTitles = listOf(R.string.tab_today, R.string.tab_history, R.string.tab_settings)
 
 @Composable
 fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
@@ -49,7 +48,7 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.onResume() }
 
     if (!hasPermission) {
-        Scaffold(Modifier.fillMaxSize()) { padding ->
+        Scaffold(Modifier.fillMaxSize(), containerColor = Shad.colors.background) { padding ->
             OnboardingScreen(Modifier.padding(padding))
         }
         return
@@ -57,29 +56,32 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
 
     val navController = rememberNavController()
     val backStack by navController.currentBackStackEntryAsState()
-    val currentRoute = backStack?.destination?.route
-    val selectedTab = tabs.indexOfFirst { it.route == currentRoute }
+    val selectedTab = tabRoutes.indexOf(backStack?.destination?.route)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = Shad.colors.background,
         topBar = {
-            // Always reserves the status bar; the tab row is only shown on the three main screens.
-            Column(Modifier.statusBarsPadding()) {
+            // Always reserves the status bar; the header is only shown on the three main screens.
+            Column(Modifier.background(Shad.colors.background).statusBarsPadding()) {
                 if (selectedTab >= 0) {
-                    PrimaryTabRow(selectedTabIndex = selectedTab) {
-                        tabs.forEachIndexed { index, tab ->
-                            Tab(
-                                selected = index == selectedTab,
-                                onClick = {
-                                    navController.navigate(tab.route) {
-                                        popUpTo(ROUTE_TODAY) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                },
-                                text = { Text(stringResource(tab.titleRes)) },
-                            )
-                        }
+                    Column(Modifier.padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 4.dp)) {
+                        Text(
+                            stringResource(R.string.app_name),
+                            style = MaterialTheme.typography.titleLarge,
+                            modifier = Modifier.padding(bottom = 12.dp),
+                        )
+                        ShadTabs(
+                            titles = tabTitles.map { stringResource(it) },
+                            selected = selectedTab,
+                            onSelect = { index ->
+                                navController.navigate(tabRoutes[index]) {
+                                    popUpTo(ROUTE_TODAY) { saveState = true }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            },
+                        )
                     }
                 }
             }
@@ -108,3 +110,11 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
         }
     }
 }
+
+/** Shared list padding: 16dp gutters, room for the top bar and the system bars. */
+fun screenPadding(outer: PaddingValues): PaddingValues = PaddingValues(
+    start = 16.dp,
+    end = 16.dp,
+    top = outer.calculateTopPadding() + 12.dp,
+    bottom = outer.calculateBottomPadding() + 24.dp,
+)

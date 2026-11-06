@@ -1,0 +1,57 @@
+# Yol Haritası
+
+Her aşama sonunda uygulama telefonda çalışır durumda olmalı.
+
+Durum notu: kod yazıldı ve `./gradlew lintDebug assembleDebug testDebugUnitTest` temiz geçiyor (21 birim testi). Uygulama Android emülatöründe (API 37) çalıştırılıp üç sekme, eşik değişimi ve ikon kontrol edildi. **Gerçek telefonda henüz denenmedi**; kalan tek madde gerçek kullanım verisine bakarak eşikleri kalibre etmek.
+
+## Aşama 0: Temel (yapıldı)
+
+- [x] Android Studio ile Compose projesi (`com.loopbreak`, minSdk 26)
+- [x] README ve belgeler
+
+## Aşama 1: Veri toplama
+
+- [x] `PACKAGE_USAGE_STATS` izni: manifest, izin kontrolü (`UsageStatsReader.hasPermission`), Ayarlar'a yönlendirme
+- [x] Onboarding / izin ekranı
+- [x] `UsageStatsManager` sarmalayıcı ve ham olay okuma
+- [x] KSP + Hilt kurulumu (`@HiltAndroidApp`, `@AndroidEntryPoint`)
+- [x] Room kurulumu, `usage_events` tablosu, Hilt modülü
+- [x] WorkManager (`@HiltWorker`) ile periyodik senkron (15 dk) + uygulama öne gelince senkron
+- [x] Debug ekranı: ham olayları listele, "sıfırla ve yeniden eşitle"
+- [x] Emülatörde doğrulandı: olaylar veritabanına geliyor. Gerçek telefonda ayrıca bakılmalı.
+
+## Aşama 2: Döngü tespiti
+
+- [x] `SessionBuilder` + birim testleri
+- [x] `LoopDetector` (re-open, quick peek, ping-pong) + birim testleri
+- [x] Varsayılan hariç tutulanlar (kendi uygulama, launcher, sistem arayüzü, klavye)
+- [x] `loop_events` tablosu ve tespit hattının bağlanması (`LoopRepository.sync`)
+- [x] Kullanıcının kendi hariç listesi (Ayarlar)
+- [x] Emülatörde doğrulandı: yapay açma-kapama davranışı döngü olarak çıkıyor, eşik değişince geçmiş yeniden hesaplanıyor. Gerçek kullanım verisiyle ayrıca bakılmalı.
+
+## Aşama 3: Arayüz
+
+- [x] "Bugün" ekranı: loop skoru, en çok döngüye giren uygulamalar, döngü listesi
+- [x] Saate göre döngü grafiği (Canvas)
+- [x] "Geçmiş" ekranı: 7/30 gün trendi, gün x saat ısı haritası, en çok döngüye giren uygulamalar
+- [x] "Ayarlar" ekranı: eşikler (değişince tüm geçmiş yeniden hesaplanır), hariç listesi, bildirim, veriyi sil
+- [x] Gün seçici (Bugün ekranında ‹ ›)
+
+## Aşama 4: Cilalama ve geri bildirim
+
+- [x] Kalibrasyon aracı: Ayarlar'daki "Eşik ipucu" son 7 günün oturum süresi ve dönüş aralığı dağılımını gösteriyor (`CalibrationStats`).
+- [ ] Eşik değerlerini gerçek telefonda birkaç gün kullanıp bu dağılıma göre seçmek. Veri senin telefonunda oluşacağı için burada yapılamaz.
+- [x] Hata düzeltildi: Ayarlar uygulaması launcher sanılıp hariç tutuluyordu (emülatörde bulundu ve doğrulandı)
+- [x] Sistem gürültüsü (izin denetleyici, paket yükleyici, Play Hizmetleri, Ayar Hizmetleri) varsayılan olarak hariç
+- [x] Nazik bildirim (varsayılan kapalı, Ayarlar'dan açılır): son 10 dk içinde bir uygulamaya ≥ 3 dönüş
+- [x] Koyu tema (emülatörde kontrol edildi, pencere arka planı da koyu), boş ve eşitleme hatası durumları
+- [x] Uygulama ikonu (kırık halka, adaptive + monochrome)
+- [x] Gece yarısını aşan döngüler (yeniden hesaplama gün başından 1 saat önce başlıyor)
+
+## Fikir havuzu (sıralanmamış)
+
+- Haftalık özet
+- Döngü anında "nefes al" ekranı
+- Hedef koyma: "bu hafta Instagram döngülerini yarıya indir"
+- Widget
+- Dışa aktarma (CSV)

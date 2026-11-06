@@ -1,0 +1,77 @@
+<resources>
+    <string name="app_name">LoopBreak</string>
+
+    <string name="onboarding_title">Kullanım erişimi gerekli</string>
+    <string name="onboarding_body">LoopBreak, hangi uygulamayı ne zaman açıp kapattığını görmek için Android\'in kullanım erişimi iznine ihtiyaç duyar. İzni Ayarlar\'da LoopBreak için açman gerekiyor.</string>
+    <string name="onboarding_privacy">Veriler yalnızca bu telefonda işlenir ve telefondan çıkmaz. Uygulamanın internet izni bile yok.</string>
+    <string name="onboarding_button">Ayarları aç</string>
+
+    <string name="action_refresh">Yenile</string>
+    <string name="action_raw_events">Ham olaylar</string>
+    <string name="syncing">Eşitleniyor…</string>
+    <string name="sync_failed">Eşitleme başarısız oldu. Yenile’ye dokunarak tekrar dene.</string>
+    <string name="today_score_label">Loop skoru</string>
+    <string name="today_score_caption">tekrar dönüş + refleks açma</string>
+    <string name="today_hourly">Saate göre döngüler</string>
+    <string name="today_top_apps">En çok döngüye giren uygulamalar</string>
+    <string name="today_events">Bugünkü döngüler</string>
+    <string name="today_empty">Bugün henüz döngü yok.</string>
+    <string name="top_app_detail">%1$d dönüş · %2$d refleks · %3$d ping-pong</string>
+
+    <string name="loop_type_re_open">Tekrar dönüş</string>
+    <string name="loop_type_quick_peek">Refleks açma</string>
+    <string name="loop_type_ping_pong">Ping-pong</string>
+    <string name="loop_detail_re_open">%1$d açılış · %2$s–%3$s</string>
+    <string name="loop_detail_quick_peek">%1$s · %2$d sn</string>
+    <string name="loop_detail_ping_pong">%1$d geçiş · %2$s–%3$s</string>
+
+    <string name="debug_title">Ham olaylar</string>
+    <string name="debug_count">Veritabanında %1$d olay</string>
+    <string name="debug_recent">Son 200 olay</string>
+    <string name="debug_reset">Sıfırla ve yeniden eşitle</string>
+    <string name="debug_resumed">Açıldı</string>
+    <string name="debug_paused">Kapandı</string>
+    <string name="back">Geri</string>
+
+    <string name="tab_today">Bugün</string>
+    <string name="tab_history">Geçmiş</string>
+    <string name="tab_settings">Ayarlar</string>
+    <string name="day_today">Bugün</string>
+    <string name="day_yesterday">Dün</string>
+    <string name="cancel">Vazgeç</string>
+
+    <string name="history_range">Son %1$d gün</string>
+    <string name="history_total">Toplam loop skoru</string>
+    <string name="history_average">günde ortalama %1$s</string>
+    <string name="history_trend">Günlük trend</string>
+    <string name="history_heatmap">Gün ve saate göre yoğunluk</string>
+    <string name="history_top_apps">En çok döngüye giren uygulamalar</string>
+    <string name="history_empty">Bu aralıkta henüz döngü yok.</string>
+    <string name="weekdays_short">Pzt,Sal,Çar,Per,Cum,Cmt,Paz</string>
+
+    <string name="settings_thresholds">Döngü eşikleri</string>
+    <string name="settings_re_open_count">Tekrar dönüş: en az açılış</string>
+    <string name="settings_re_open_window">Tekrar dönüş: süre penceresi</string>
+    <string name="settings_quick_peek">Refleks açma: bundan kısa</string>
+    <string name="unit_min">dk</string>
+    <string name="unit_sec">sn</string>
+    <string name="settings_hint_title">Eşik ipucu (son 7 gün)</string>
+    <string name="settings_hint_sessions">%1$d oturum. Şundan kısa olanlar:</string>
+    <string name="settings_hint_shorter">&lt; %1$d sn: %2$d</string>
+    <string name="settings_hint_returns">Aynı uygulamaya dönüş aralığı:</string>
+    <string name="settings_hint_within">≤ %1$d dk: %2$d</string>
+    <string name="settings_hint_body">Refleks eşiğini kısa oturumların yığıldığı yere, tekrar dönüş süresini dönüşlerin yoğunlaştığı aralığa göre seç. Çok sayı gürültü, çok az sayı fazla sıkı eşik demektir.</string>
+    <string name="settings_notifications">Bildirim</string>
+    <string name="settings_notify_title">Nazik hatırlatma</string>
+    <string name="settings_notify_body">Aynı uygulamaya kısa sürede 3 kez veya daha fazla dönersen bir kez haber verir.</string>
+    <string name="settings_excluded">Hariç tutulan uygulamalar</string>
+    <string name="settings_excluded_hint">İşaretlediğin uygulamalar döngü sayılmaz. Launcher, sistem arayüzü ve klavye zaten hariç.</string>
+    <string name="settings_data">Veri</string>
+    <string name="settings_delete">Tüm veriyi sil</string>
+    <string name="settings_delete_confirm">Kaydedilen tüm olaylar ve döngüler silinir. Bundan sonrası yeniden kaydedilmeye başlar.</string>
+    <string name="settings_delete_yes">Sil</string>
+
+    <string name="notification_channel">Döngü hatırlatmaları</string>
+    <string name="notification_title">Aynı yere mi dönüyorsun?</string>
+    <string name="notification_text">%1$s uygulamasını son %3$d dakikada %2$d kez açtın.</string>
+</resources>

@@ -1,0 +1,39 @@
+# LoopBreak: Claude Code notları
+
+Telefon kullanımındaki açma-kapama döngülerini tespit edip gösteren Android uygulaması. Ayrıntılar: [README.md](README.md), [docs/PRODUCT.md](docs/PRODUCT.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/ROADMAP.md](docs/ROADMAP.md).
+
+## Teknoloji
+
+Kotlin, Jetpack Compose (Material 3), Room, WorkManager, DataStore, Coroutines/Flow, Navigation Compose, Hilt. Tek modül `:app`, paket `com.loopbreak`.
+
+## Kurallar
+
+- **Gizlilik**: `INTERNET` iznini, analitik ya da üçüncü taraf SDK'yı ekleme. Veri cihazdan çıkmaz.
+- **Katman yönü**: `ui → domain ← data`. `domain` paketi Android sınıfı içermez; tespit mantığı saf Kotlin kalır ve birim testle doğrulanır.
+- **Eşikler** (`DetectionConfig`) sabit kodlanmaz, tek yerde durur.
+- Bağımlılıklar `gradle/libs.versions.toml` üzerinden eklenir; sürümü doğrudan `build.gradle.kts` içine yazma.
+- Room ve Hilt için KSP kullan (kapt değil). KSP sürümü projedeki Kotlin sürümüyle eşleşmeli ve Hilt eklentisi AGP 9 ile uyumlu olmalı. Eklerken derleyip doğrula.
+- `domain` paketi Hilt'e de bağımlı olmasın; `@Inject constructor` yerine bağımlılıkları `data`/`ui` katmanındaki modüllerde bağla.
+- Play Store şimdilik kapsam dışı. Sadece debug APK ile kendi cihazında çalışacak şekilde ilerle.
+- Aşamaları [docs/ROADMAP.md](docs/ROADMAP.md) sırasıyla takip et; bir aşama bittiğinde işaretle.
+
+## Sürüm notları
+
+- `compileSdk = 37`: `core-ktx`, navigation ve lifecycle'ın güncel sürümleri bunu istiyor (`targetSdk` 36 kalır).
+- AGP 9'da Kotlin yerleşik; ayrıca `kotlin-android` eklentisi yok. KSP 2.3.13 ve Hilt 2.60.1 bu kurulumla derleniyor.
+- `DetectionConfig` varsayılanları: tekrar dönüş 10 dk içinde ≥ 2, refleks açma < 5 sn, ping-pong 5 dk içinde 3 geçiş.
+
+- Varsayılan hariç listesini ya da tespit kurallarını değiştirirsen `LoopRepository.DETECTION_VERSION` değerini artır; saklanan geçmiş bir sonraki eşitlemede yeniden hesaplanır.
+- Launcher tespiti `FallbackHome` etkinliklerini yok sayar (Ayarlar uygulaması HOME kategorisi için bir tane kaydediyor ve aksi halde launcher sanılıyor).
+
+## Komutlar
+
+```bash
+./gradlew assembleDebug        # debug APK derle
+./gradlew testDebugUnitTest    # birim testleri
+./gradlew installDebug         # bağlı cihaza kur
+```
+
+## Dil
+
+Kullanıcıyla ve belgelerde Türkçe; kod, tanımlayıcılar ve commit mesajları İngilizce.

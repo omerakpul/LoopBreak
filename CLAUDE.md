@@ -19,7 +19,7 @@ Kotlin, Jetpack Compose (Material 3), Room, WorkManager, DataStore, Coroutines/F
 
 ## Tasarım (shadcn/ui)
 
-Arayüz ui.shadcn.com tasarım dilini izler (zinc paleti). Renk token'ları `ui/theme/Color.kt` içinde (`ShadColors`, `Shad.colors`), bileşenler `ui/components/Shad.kt` içinde (`ShadCard`, `ShadButton`, `ShadIconButton`, `ShadBadge`, `ShadTabs`, `ShadSeparator`). Yeni ekranlarda Material bileşenlerini doğrudan kullanmak yerine bunları kullan; dinamik renk kapalı, kartlar gölgesiz ve 1dp kenarlıklı.
+Arayüz ui.shadcn.com tasarım dilini izler (zinc paleti). Renk token'ları `ui/theme/Color.kt` içinde (`ShadColors`, `Shad.colors`), bileşenler `ui/components/Shad.kt` içinde (`ShadCard`, `ShadButton`, `ShadIconButton`, `ShadBadge`, `ShadTabs`, `ShadSeparator`). Yazı tipleri `res/font` içinde gömülü değişken fontlar: Space Grotesk (başlıklar, skor), Inter (gövde), JetBrains Mono (saatler); tanımları `ui/theme/Type.kt`. Yeni font eklersen lisansını `licenses/fonts` altına koy. Yeni ekranlarda Material bileşenlerini doğrudan kullanmak yerine bunları kullan; dinamik renk kapalı, kartlar gölgesiz ve 1dp kenarlıklı.
 
 ## Sürüm notları
 

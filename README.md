@@ -37,6 +37,7 @@ The MVP is feature complete: permission onboarding, data collection, loop detect
 | Async | Coroutines + Flow |
 | Navigation | Navigation Compose |
 | Charts | Hand-drawn with Compose Canvas |
+| Design | shadcn/ui look (zinc palette), Space Grotesk + Inter + JetBrains Mono, bundled offline |
 | DI | Hilt (`hilt-navigation-compose`, `hilt-work`) |
 | Min SDK | 26 (Android 8.0) |
 
@@ -66,6 +67,10 @@ Useful commands:
 ./gradlew testDebugUnitTest    # run unit tests
 ./gradlew lintDebug            # run Android lint
 ```
+
+## Fonts
+
+Space Grotesk, Inter and JetBrains Mono are bundled as variable fonts (SIL Open Font License 1.1). Licenses are in [licenses/fonts](licenses/fonts).
 
 ## Documentation
 

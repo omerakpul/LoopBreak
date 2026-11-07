@@ -22,7 +22,7 @@ Default thresholds, all adjustable in Settings:
 
 ## Status
 
-The MVP is feature complete: permission onboarding, data collection, loop detection, Today / History / Settings screens, and an optional gentle notification. It has been verified end to end on an Android emulator. What is left is calibrating the thresholds against several days of real phone usage (Settings shows the session-length and return-gap distribution to help with that). Publishing to the Play Store is out of scope for now.
+The UI is available in English and Turkish (follows the phone language, or the per-app language in Android settings). The MVP is feature complete: permission onboarding, data collection, loop detection, Today / History / Settings screens, and an optional gentle notification. It has been verified end to end on an Android emulator. What is left is calibrating the thresholds against several days of real phone usage (Settings shows the session-length and return-gap distribution to help with that). Publishing to the Play Store is out of scope for now.
 
 ## Tech stack
 

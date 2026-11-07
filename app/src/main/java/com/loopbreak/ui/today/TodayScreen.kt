@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -65,9 +69,12 @@ fun TodayScreen(
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    var showScoreInfo by remember { mutableStateOf(false) }
 
     // The app can stay alive past midnight: re-read the date whenever it comes back.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshDay() }
+
+    if (showScoreInfo) ScoreInfoSheet(state = state, onDismiss = { showScoreInfo = false })
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -107,8 +114,15 @@ fun TodayScreen(
                         style = MaterialTheme.typography.labelLarge,
                         color = Shad.colors.mutedForeground,
                         modifier = Modifier.weight(1f),
+                        maxLines = 2,
                     )
                     state.delta?.let { DeltaBadge(it) }
+                    Spacer(Modifier.width(8.dp))
+                    ShadIconButton(
+                        glyph = "?",
+                        description = stringResource(R.string.score_info_title),
+                        onClick = { showScoreInfo = true },
+                    )
                 }
                 Spacer(Modifier.height(8.dp))
                 val peak = state.hourly.indices.maxByOrNull { state.hourly[it] }

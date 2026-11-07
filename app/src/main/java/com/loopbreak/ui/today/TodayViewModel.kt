@@ -50,6 +50,10 @@ data class TodayUiState(
     val delta: DayDelta? = null,
     /** Daily goal from the settings; 0 = off. */
     val goal: Int = 0,
+    /** The user's detection thresholds, for the score explanation. */
+    val reOpenMinCount: Int = 2,
+    val reOpenWindowMin: Int = 10,
+    val quickPeekMaxSec: Int = 5,
     val hourly: List<Int> = List(24) { 0 },
     val topApps: List<AppLoopStat> = emptyList(),
     val loops: List<LoopUi> = emptyList(),
@@ -78,7 +82,14 @@ class TodayViewModel @Inject constructor(
             repository.observeLoops(previousFrom, to).map { build(it, offset, day, from) }
         }
         .flowOn(Dispatchers.Default)
-        .combine(settings.settings.map { it.dailyGoal }.distinctUntilChanged()) { s, goal -> s.copy(goal = goal) }
+        .combine(settings.settings.distinctUntilChanged()) { s, u ->
+            s.copy(
+                goal = u.dailyGoal,
+                reOpenMinCount = u.reOpenMinCount,
+                reOpenWindowMin = u.reOpenWindowMin,
+                quickPeekMaxSec = u.quickPeekMaxSec,
+            )
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayUiState())
 
     fun previousDay() {

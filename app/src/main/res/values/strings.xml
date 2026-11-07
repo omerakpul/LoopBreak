@@ -69,6 +69,12 @@
     <string name="settings_language_title">Language</string>
     <string name="settings_language_body">Pick the language of the app. System default follows your phone.</string>
     <string name="settings_language_system">System</string>
+    <string name="score_info_title">How the score works</string>
+    <string name="score_info_intro">The loop score counts how often you slip back into the same app without meaning to. It adds up re-opens and quick peeks. Lower is better.</string>
+    <string name="score_info_re_open">You open the same app %1$d or more times within %2$d minutes. Every return after the first one adds 1.</string>
+    <string name="score_info_quick_peek">A visit shorter than %1$d seconds. Each one adds 1.</string>
+    <string name="score_info_ping_pong">You bounce between two apps (%1$d switches within %2$d minutes). Shown in the lists, but it does not add to the score.</string>
+    <string name="score_info_footer">You can change these thresholds in Settings.</string>
     <string name="open_app_details">Open details for %1$s</string>
     <string name="detail_recent">Recent loops</string>
     <string name="detail_empty">No loops for this app in this range.</string>

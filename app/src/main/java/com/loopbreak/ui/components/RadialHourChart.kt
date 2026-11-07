@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.drawText
@@ -52,6 +54,14 @@ fun RadialHourChart(
                 val stroke = 7.dp.toPx() * k
                 val max = (values.maxOrNull() ?: 0).coerceAtLeast(1)
 
+                // A faint glow behind the ring so the score does not float on a flat card.
+                val glow = innerRadius * 1.7f
+                drawCircle(
+                    brush = Brush.radialGradient(listOf(c.primary.copy(alpha = 0.10f), Color.Transparent), center = mid, radius = glow),
+                    radius = glow,
+                    center = mid,
+                )
+
                 fun direction(hour: Int): Offset {
                     // Like a clock face: the hour mark itself sits on the axis (00 top, 06 right, 12 bottom, 18 left).
                     val angle = Math.toRadians(-90.0 + hour * 15.0)
@@ -65,7 +75,7 @@ fun RadialHourChart(
                     // Staggered: each hour starts a little after the previous one.
                     val t = (grow.value * 1.6f - hour / 24f * 0.6f).coerceIn(0f, 1f)
                     val length = shortest + (fullLength - shortest) * t
-                    val color = if (value > 0) lerp(c.primary, c.warning, ratio) else c.border
+                    val color = if (value > 0) lerp(c.primary, c.warning, ratio) else c.input
                     drawLine(
                         color = color,
                         start = mid + dir * innerRadius,

@@ -5,8 +5,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 /**
- * Design tokens from shadcn/ui (zinc base colour), see ui.shadcn.com/docs/theming.
- * Names follow the CSS variables: --background, --card, --muted, --border, ...
+ * Design tokens. Names follow the usual CSS-variable vocabulary: background, card, muted, border…
+ * The palette is deliberately soft: tinted neutrals instead of pure black/white, quiet borders and
+ * slightly desaturated accents, so nothing on screen shouts.
  */
 @Immutable
 data class ShadColors(
@@ -27,42 +28,46 @@ data class ShadColors(
     val input: Color,
     /** Background of the selected trigger in [com.loopbreak.ui.components.ShadTabs]. */
     val tabActive: Color,
+    /** Fill of secondary controls (icon buttons, outline buttons) sitting on a card. */
+    val control: Color,
 )
 
 val LightShadColors = ShadColors(
-    background = Color(0xFFFFFFFF),
-    foreground = Color(0xFF09090B),
+    background = Color(0xFFF6F6F8),
+    foreground = Color(0xFF1A1A1E),
     card = Color(0xFFFFFFFF),
     primary = Color(0xFF0F766E),
     primaryForeground = Color(0xFFFFFFFF),
-    secondary = Color(0xFFF4F4F5),
-    muted = Color(0xFFF4F4F5),
-    mutedForeground = Color(0xFF71717A),
-    accent = Color(0xFFF4F4F5),
-    destructive = Color(0xFFDC2626),
-    warning = Color(0xFFD97706),
-    violet = Color(0xFF7C3AED),
-    border = Color(0xFFE4E4E7),
-    input = Color(0xFFE4E4E7),
+    secondary = Color(0xFFEFEFF2),
+    muted = Color(0xFFEDEDF1),
+    mutedForeground = Color(0xFF6E6E78),
+    accent = Color(0xFFEFEFF2),
+    destructive = Color(0xFFD6453D),
+    warning = Color(0xFFC98A1B),
+    violet = Color(0xFF7A5BD6),
+    border = Color(0xFFE9E9EE),
+    input = Color(0xFFE4E4EA),
     tabActive = Color(0xFFFFFFFF),
+    control = Color(0xFFF3F3F6),
 )
 
 val DarkShadColors = ShadColors(
-    background = Color(0xFF09090B),
-    foreground = Color(0xFFFAFAFA),
-    card = Color(0xFF18181B),
-    primary = Color(0xFF2DD4BF),
-    primaryForeground = Color(0xFF042F2E),
-    secondary = Color(0xFF27272A),
-    muted = Color(0xFF27272A),
-    mutedForeground = Color(0xFFA1A1AA),
-    accent = Color(0xFF27272A),
-    destructive = Color(0xFFF87171),
-    warning = Color(0xFFFBBF24),
-    violet = Color(0xFFA78BFA),
-    border = Color(0xFF2F2F33),
-    input = Color(0xFF3F3F46),
-    tabActive = Color(0xFF18181B),
+    background = Color(0xFF0B0B0E),
+    foreground = Color(0xFFE9E9EE),
+    card = Color(0xFF17171B),
+    primary = Color(0xFF5CC7B8),
+    primaryForeground = Color(0xFF06302B),
+    secondary = Color(0xFF25252B),
+    muted = Color(0xFF222227),
+    mutedForeground = Color(0xFF9C9CA6),
+    accent = Color(0xFF25252B),
+    destructive = Color(0xFFE5837D),
+    warning = Color(0xFFE3B866),
+    violet = Color(0xFFA99BE3),
+    border = Color(0xFF242429),
+    input = Color(0xFF2E2E34),
+    tabActive = Color(0xFF33333A),
+    control = Color(0xFF222227),
 )
 
 val LocalShadColors = staticCompositionLocalOf { LightShadColors }

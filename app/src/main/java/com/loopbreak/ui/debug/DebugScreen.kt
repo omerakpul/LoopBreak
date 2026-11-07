@@ -29,7 +29,8 @@ import com.loopbreak.ui.components.ShadBadgeVariant
 import com.loopbreak.ui.components.ShadButton
 import com.loopbreak.ui.components.ShadButtonVariant
 import com.loopbreak.ui.components.ShadCard
-import com.loopbreak.ui.components.ShadIconButton
+import com.loopbreak.ui.components.ChevronDirection
+import com.loopbreak.ui.components.ShadChevronButton
 import com.loopbreak.ui.screenPadding
 import com.loopbreak.ui.theme.MonoFontFamily
 import com.loopbreak.ui.theme.Shad
@@ -56,7 +57,7 @@ fun DebugScreen(
     ) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ShadIconButton("‹", stringResource(R.string.back), onClick = onBack)
+                ShadChevronButton(ChevronDirection.Left, stringResource(R.string.back), onClick = onBack)
                 Spacer(Modifier.width(12.dp))
                 Text(stringResource(R.string.debug_title), style = MaterialTheme.typography.titleLarge)
             }

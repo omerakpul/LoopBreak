@@ -33,7 +33,8 @@ import com.loopbreak.ui.components.MutedText
 import com.loopbreak.ui.components.ShadBadge
 import com.loopbreak.ui.components.ShadBadgeVariant
 import com.loopbreak.ui.components.ShadCard
-import com.loopbreak.ui.components.ShadIconButton
+import com.loopbreak.ui.components.ChevronDirection
+import com.loopbreak.ui.components.ShadChevronButton
 import com.loopbreak.ui.components.ShadSeparator
 import com.loopbreak.ui.components.ShadTabs
 import com.loopbreak.ui.components.describe
@@ -68,7 +69,7 @@ fun AppDetailScreen(
     ) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ShadIconButton("‹", stringResource(R.string.back), onClick = onBack)
+                ShadChevronButton(ChevronDirection.Left, stringResource(R.string.back), onClick = onBack)
                 Spacer(Modifier.width(12.dp))
                 Text(
                     viewModel.title,

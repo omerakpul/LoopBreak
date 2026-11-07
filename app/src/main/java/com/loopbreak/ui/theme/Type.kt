@@ -43,13 +43,13 @@ private fun style(
     letterSpacing = tracking.sp,
 )
 
-/** shadcn-like scale: tight semibold headings, 14sp body, small medium labels. */
+/** Light-handed scale: medium-weight headings, 14sp body, small medium labels. */
 val Typography = Typography(
-    displayLarge = style(DisplayFontFamily, 48, FontWeight.Bold, 52, -1.2),
-    displayMedium = style(DisplayFontFamily, 36, FontWeight.Bold, 40, -0.9),
-    headlineMedium = style(DisplayFontFamily, 24, FontWeight.SemiBold, 30, -0.6),
-    titleLarge = style(DisplayFontFamily, 20, FontWeight.SemiBold, 26, -0.4),
-    titleMedium = style(DisplayFontFamily, 16, FontWeight.SemiBold, 22, -0.2),
+    displayLarge = style(DisplayFontFamily, 48, FontWeight.SemiBold, 52, -1.2),
+    displayMedium = style(DisplayFontFamily, 36, FontWeight.SemiBold, 40, -0.9),
+    headlineMedium = style(DisplayFontFamily, 24, FontWeight.Medium, 30, -0.6),
+    titleLarge = style(DisplayFontFamily, 20, FontWeight.Medium, 26, -0.4),
+    titleMedium = style(DisplayFontFamily, 16, FontWeight.Medium, 22, -0.2),
     titleSmall = style(BodyFontFamily, 14, FontWeight.Medium, 20),
     bodyLarge = style(BodyFontFamily, 15, FontWeight.Normal, 22),
     bodyMedium = style(BodyFontFamily, 14, FontWeight.Normal, 20),

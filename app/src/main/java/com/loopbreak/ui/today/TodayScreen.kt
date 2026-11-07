@@ -51,6 +51,8 @@ import com.loopbreak.ui.components.ShadBadgeVariant
 import com.loopbreak.ui.components.ShadButton
 import com.loopbreak.ui.components.ShadButtonVariant
 import com.loopbreak.ui.components.ShadCard
+import com.loopbreak.ui.components.ChevronDirection
+import com.loopbreak.ui.components.ShadChevronButton
 import com.loopbreak.ui.components.ShadIconButton
 import com.loopbreak.ui.components.ShadSeparator
 import com.loopbreak.ui.screenPadding
@@ -173,8 +175,6 @@ private fun TodayContent(
                         modifier = Modifier.weight(1f),
                         maxLines = 2,
                     )
-                    state.delta?.let { DeltaBadge(it) }
-                    Spacer(Modifier.width(8.dp))
                     ShadIconButton(
                         glyph = "?",
                         description = stringResource(R.string.score_info_title),
@@ -204,6 +204,11 @@ private fun TodayContent(
                             color = Shad.colors.mutedForeground,
                         )
                     }
+                }
+                // The comparison chip sits under the ring so the card title keeps its room.
+                state.delta?.let {
+                    Spacer(Modifier.height(4.dp))
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) { DeltaBadge(it) }
                 }
                 if (state.goal > 0) {
                     val over = state.score > state.goal
@@ -356,13 +361,13 @@ private fun DayPicker(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        ShadIconButton("‹", stringResource(R.string.day_previous), onClick = onPrevious)
+        ShadChevronButton(ChevronDirection.Left, stringResource(R.string.day_previous), onClick = onPrevious)
         Text(
             title,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(horizontal = 4.dp),
         )
-        ShadIconButton("›", stringResource(R.string.day_next), onClick = onNext, enabled = canGoForward)
+        ShadChevronButton(ChevronDirection.Right, stringResource(R.string.day_next), onClick = onNext, enabled = canGoForward)
         Spacer(Modifier.weight(1f))
         ShadButton(
             text = stringResource(if (syncing) R.string.syncing else R.string.action_refresh),

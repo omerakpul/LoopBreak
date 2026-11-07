@@ -1,7 +1,9 @@
 package com.loopbreak.ui.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
@@ -10,7 +12,10 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -19,11 +24,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
@@ -49,7 +57,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,16 +67,16 @@ import com.loopbreak.ui.theme.Shad
 import kotlin.math.cos
 import kotlin.math.sin
 
-/* shadcn/ui building blocks (ui.shadcn.com/docs/components) for Compose. */
+/* Building blocks of the app's design system. */
 
 /** A soft vertical wash of the brand colour, for hero cards. */
 @Composable
 fun heroBrush(): Brush {
     val c = Shad.colors
-    return Brush.verticalGradient(listOf(c.primary.copy(alpha = 0.18f), c.card))
+    return Brush.verticalGradient(listOf(c.primary.copy(alpha = 0.10f), c.card))
 }
 
-/** Card: 1dp border, rounded-xl, no elevation. Pass [brush] for a tinted hero card. */
+/** Card: quiet border, generous corners, no elevation. Pass [brush] for a tinted hero card. */
 @Composable
 fun ShadCard(
     modifier: Modifier = Modifier,
@@ -76,13 +86,13 @@ fun ShadCard(
     val c = Shad.colors
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(20.dp),
         color = c.card,
         contentColor = c.foreground,
         border = BorderStroke(1.dp, c.border),
     ) {
         val inner = if (brush != null) Modifier.background(brush) else Modifier
-        Column(inner.padding(16.dp), content = content)
+        Column(inner.padding(20.dp), content = content)
     }
 }
 
@@ -130,21 +140,21 @@ fun ShadButton(
     val c = Shad.colors
     val (container, content, border) = when (variant) {
         ShadButtonVariant.Default -> Triple(c.primary, c.primaryForeground, null)
-        ShadButtonVariant.Outline -> Triple(c.background, c.foreground, BorderStroke(1.dp, c.input))
+        ShadButtonVariant.Outline -> Triple(c.control, c.foreground, BorderStroke(1.dp, c.border))
         ShadButtonVariant.Ghost -> Triple(Color.Transparent, c.foreground, null)
-        ShadButtonVariant.Destructive -> Triple(c.background, c.destructive, BorderStroke(1.dp, c.input))
+        ShadButtonVariant.Destructive -> Triple(c.control, c.destructive, BorderStroke(1.dp, c.border))
     }
     Surface(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier.alpha(if (enabled) 1f else 0.5f),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(12.dp),
         color = container,
         contentColor = content,
         border = border,
     ) {
         Box(
-            Modifier.defaultMinSize(minHeight = 36.dp).padding(horizontal = 16.dp),
+            Modifier.defaultMinSize(minHeight = 40.dp).padding(horizontal = 18.dp),
             contentAlignment = Alignment.Center,
         ) {
             Text(text, style = MaterialTheme.typography.labelLarge)
@@ -165,14 +175,14 @@ fun ShadSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = c.card,
         contentColor = c.foreground,
-        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         dragHandle = {
             Box(
                 Modifier
                     .padding(vertical = 12.dp)
                     .size(width = 36.dp, height = 4.dp)
                     .clip(RoundedCornerShape(50))
-                    .background(c.border),
+                    .background(c.input),
             )
         },
     ) {
@@ -187,7 +197,34 @@ fun ShadSheet(
 fun Modifier.describe(text: String?): Modifier =
     if (text == null) this else semantics { contentDescription = text }
 
-/** Square outline button for single glyphs such as ‹ › − +. [description] is what screen readers say. */
+/** Shared look of the small square buttons: soft fill, quiet border, 12dp corners. */
+@Composable
+private fun IconButtonSurface(
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier,
+    enabled: Boolean,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    val c = Shad.colors
+    Surface(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier.size(40.dp).alpha(if (enabled) 1f else 0.45f),
+        shape = RoundedCornerShape(12.dp),
+        color = c.control,
+        contentColor = c.foreground,
+        border = BorderStroke(1.dp, c.border),
+    ) {
+        Box(
+            Modifier.clearAndSetSemantics { contentDescription = description },
+            contentAlignment = Alignment.Center,
+            content = content,
+        )
+    }
+}
+
+/** Square button for a single glyph such as − + ?. [description] is what screen readers say. */
 @Composable
 fun ShadIconButton(
     glyph: String,
@@ -196,18 +233,35 @@ fun ShadIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
 ) {
-    val c = Shad.colors
-    Surface(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = modifier.size(36.dp).alpha(if (enabled) 1f else 0.5f),
-        shape = RoundedCornerShape(8.dp),
-        color = c.background,
-        contentColor = c.foreground,
-        border = BorderStroke(1.dp, c.input),
-    ) {
-        Box(Modifier.clearAndSetSemantics { contentDescription = description }, contentAlignment = Alignment.Center) {
-            Text(glyph, style = MaterialTheme.typography.titleMedium)
+    IconButtonSurface(description, onClick, modifier, enabled) {
+        Text(glyph, style = MaterialTheme.typography.titleMedium)
+    }
+}
+
+enum class ChevronDirection { Left, Right }
+
+/** Square button with a drawn chevron: previous / next, back. */
+@Composable
+fun ShadChevronButton(
+    direction: ChevronDirection,
+    description: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    IconButtonSurface(description, onClick, modifier, enabled) {
+        val color = LocalContentColor.current
+        Canvas(Modifier.size(20.dp)) {
+            val w = size.width
+            val h = size.height
+            val arm = if (direction == ChevronDirection.Left) w * 0.62f else w * 0.38f
+            val tip = if (direction == ChevronDirection.Left) w * 0.36f else w * 0.64f
+            val path = Path().apply {
+                moveTo(arm, h * 0.22f)
+                lineTo(tip, h * 0.5f)
+                lineTo(arm, h * 0.78f)
+            }
+            drawPath(path, color, style = Stroke(width = 2.2.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
         }
     }
 }
@@ -320,7 +374,7 @@ fun LoopMark(size: androidx.compose.ui.unit.Dp, modifier: Modifier = Modifier, c
     }
 }
 
-/** Tabs: muted pill track with a raised active trigger. */
+/** Tabs: a soft track with a raised indicator that slides to the selected trigger. */
 @Composable
 fun ShadTabs(
     titles: List<String>,
@@ -329,25 +383,46 @@ fun ShadTabs(
     modifier: Modifier = Modifier,
 ) {
     val c = Shad.colors
-    Row(
-        modifier = modifier
+    val triggerShape = RoundedCornerShape(12.dp)
+    BoxWithConstraints(
+        modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(c.muted)
-            .padding(3.dp),
+            .padding(4.dp),
     ) {
-        titles.forEachIndexed { index, title ->
-            val active = index == selected
-            Surface(
-                onClick = { onSelect(index) },
-                modifier = Modifier.weight(1f).height(30.dp),
-                shape = RoundedCornerShape(7.dp),
-                color = if (active) c.tabActive else Color.Transparent,
-                contentColor = if (active) c.foreground else c.mutedForeground,
-                border = if (active) BorderStroke(1.dp, c.border) else null,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(title, style = MaterialTheme.typography.labelLarge, maxLines = 1)
+        val slot = maxWidth / titles.size
+        val offset by animateDpAsState(
+            targetValue = slot * selected.coerceAtLeast(0),
+            animationSpec = tween(220, easing = FastOutSlowInEasing),
+            label = "tab-offset",
+        )
+        Box(
+            Modifier
+                .offset(x = offset)
+                .width(slot)
+                .height(34.dp)
+                .clip(triggerShape)
+                .background(c.tabActive),
+        )
+        Row {
+            titles.forEachIndexed { index, title ->
+                val active = index == selected
+                val textColor by animateColorAsState(
+                    targetValue = if (active) c.foreground else c.mutedForeground,
+                    animationSpec = tween(200),
+                    label = "tab-color",
+                )
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .height(34.dp)
+                        .clip(triggerShape)
+                        .clickable(role = Role.Tab) { onSelect(index) }
+                        .semantics { this.selected = active },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(title, style = MaterialTheme.typography.labelLarge, color = textColor, maxLines = 1)
                 }
             }
         }

@@ -43,13 +43,13 @@ private fun ShadColors.toMaterial(dark: Boolean): ColorScheme {
     )
 }
 
-/** shadcn radius is 0.625rem (10dp); cards use rounded-xl, controls rounded-md/lg. */
+/** Generous corners: cards 20dp, controls 12dp. */
 private val ShadShapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(6.dp),
-    medium = RoundedCornerShape(8.dp),
-    large = RoundedCornerShape(10.dp),
-    extraLarge = RoundedCornerShape(14.dp),
+    extraSmall = RoundedCornerShape(6.dp),
+    small = RoundedCornerShape(8.dp),
+    medium = RoundedCornerShape(12.dp),
+    large = RoundedCornerShape(16.dp),
+    extraLarge = RoundedCornerShape(20.dp),
 )
 
 @Composable

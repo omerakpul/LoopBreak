@@ -38,6 +38,7 @@ fun RadialHourChart(
     val c = Shad.colors
     val measurer = rememberTextMeasurer()
     val labelStyle = MaterialTheme.typography.labelSmall.copy(color = c.mutedForeground)
+    val grow = rememberEntrance(values)
 
     BoxWithConstraints(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         val side: Dp = min(maxWidth.value, REFERENCE_SIZE.value).dp
@@ -59,7 +60,10 @@ fun RadialHourChart(
                 values.forEachIndexed { hour, value ->
                     val dir = direction(hour)
                     val ratio = value.toFloat() / max
-                    val length = if (value > 0) shortest + (longest - shortest) * ratio else shortest
+                    val fullLength = if (value > 0) shortest + (longest - shortest) * ratio else shortest
+                    // Staggered: each hour starts a little after the previous one.
+                    val t = (grow.value * 1.6f - hour / 24f * 0.6f).coerceIn(0f, 1f)
+                    val length = shortest + (fullLength - shortest) * t
                     val color = if (value > 0) lerp(c.primary, c.warning, ratio) else c.border
                     drawLine(
                         color = color,

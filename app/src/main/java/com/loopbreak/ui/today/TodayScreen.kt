@@ -1,5 +1,8 @@
 package com.loopbreak.ui.today
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -70,6 +75,11 @@ fun TodayScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showScoreInfo by remember { mutableStateOf(false) }
+
+    // The score counts up from zero when the screen opens or the day changes.
+    var scoreTarget by remember { mutableIntStateOf(0) }
+    LaunchedEffect(state.score) { scoreTarget = state.score }
+    val shownScore by animateIntAsState(scoreTarget, tween(900, easing = FastOutSlowInEasing), label = "score")
 
     // The app can stay alive past midnight: re-read the date whenever it comes back.
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) { viewModel.refreshDay() }
@@ -138,7 +148,7 @@ fun TodayScreen(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            state.score.toString(),
+                            shownScore.toString(),
                             style = MaterialTheme.typography.displayLarge,
                         )
                         Text(

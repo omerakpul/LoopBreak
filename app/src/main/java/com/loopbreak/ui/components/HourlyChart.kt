@@ -31,6 +31,7 @@ fun BarChart(
     val track = MaterialTheme.colorScheme.surfaceVariant
     val over = Shad.colors.warning
     val goalLine = Shad.colors.mutedForeground
+    val grow = rememberEntrance(values to goal)
 
     Column(modifier.describe(contentDescription)) {
         Canvas(Modifier.fillMaxWidth().height(96.dp)) {
@@ -43,7 +44,7 @@ fun BarChart(
                 val x = index * slot + (slot - barWidth) / 2f
                 drawRoundRect(track, Offset(x, size.height - base), Size(barWidth, base), radius)
                 if (value > 0) {
-                    val h = (size.height - base) * value / max + base
+                    val h = (size.height - base) * value / max * grow.value + base
                     drawRoundRect(if (goal in 1 until value) over else bar, Offset(x, size.height - h), Size(barWidth, h), radius)
                 }
             }

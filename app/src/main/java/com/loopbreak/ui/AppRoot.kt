@@ -77,7 +77,7 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
                             Modifier.padding(bottom = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            LoopMark(size = 30.dp)
+                            LoopMark(size = 38.dp)
                             Text(
                                 stringResource(R.string.app_name),
                                 style = MaterialTheme.typography.titleLarge,

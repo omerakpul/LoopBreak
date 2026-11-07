@@ -45,7 +45,7 @@ Durum notu: kod yazıldı ve `./gradlew lintDebug assembleDebug testDebugUnitTes
 - [x] Sistem gürültüsü (izin denetleyici, paket yükleyici, Play Hizmetleri, Ayar Hizmetleri) varsayılan olarak hariç
 - [x] Nazik bildirim (varsayılan kapalı, Ayarlar'dan açılır): son 10 dk içinde bir uygulamaya ≥ 3 dönüş
 - [x] Koyu tema (emülatörde kontrol edildi, pencere arka planı da koyu), boş ve eşitleme hatası durumları
-- [x] Uygulama ikonu (kırık halka, adaptive + monochrome)
+- [x] Uygulama ikonu (kırık sonsuzluk, adaptive + monochrome + bildirim simgesi)
 - [x] Gece yarısını aşan döngüler (yeniden hesaplama gün başından 1 saat önce başlıyor)
 
 ## Aşama 5: Sağlamlaştırma (yapıldı)

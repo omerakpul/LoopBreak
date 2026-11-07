@@ -48,10 +48,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.lerp
@@ -65,10 +65,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.loopbreak.ui.theme.Shad
-import kotlin.math.cos
-import kotlin.math.sin
 
 /* Building blocks of the app's design system. */
 
@@ -346,40 +345,35 @@ fun ShadProgress(fraction: Float, modifier: Modifier = Modifier, color: Color = 
     }
 }
 
-/** The app mark: a ring with a gap at the top and an arrowhead, i.e. a loop being broken. */
+/**
+ * The app mark: an infinity sign whose right loop is broken, with a dot in the break.
+ * Drawn in a 100-unit box so it matches the launcher icon exactly.
+ */
 @Composable
-fun LoopMark(size: androidx.compose.ui.unit.Dp, modifier: Modifier = Modifier, color: Color = Shad.colors.primary) {
+fun LoopMark(
+    size: Dp,
+    modifier: Modifier = Modifier,
+    color: Color = Shad.colors.primary,
+    accent: Color = Shad.colors.warning,
+) {
     Canvas(modifier.size(size)) {
-        val s = this.size.minDimension
-        val radius = s * 0.36f
-        val stroke = s * 0.11f
-        val mid = Offset(s / 2f, s / 2f)
-        drawArc(
-            color = color,
-            startAngle = -60f,
-            sweepAngle = 300f,
-            useCenter = false,
-            topLeft = Offset(mid.x - radius, mid.y - radius),
-            size = Size(radius * 2, radius * 2),
-            style = Stroke(width = stroke, cap = StrokeCap.Round),
-        )
-        // Arrowhead at the end of the arc (240 deg), pointing along the clockwise tangent.
-        val end = Math.toRadians(240.0)
-        val tip0 = Offset(mid.x + radius * cos(end).toFloat(), mid.y + radius * sin(end).toFloat())
-        val tangent = Offset((-sin(end)).toFloat(), cos(end).toFloat())
-        val normal = Offset(-tangent.y, tangent.x)
-        val head = s * 0.2f
-        val tip = tip0 + tangent * (head * 0.9f)
-        val b1 = tip0 + normal * (head * 0.55f)
-        val b2 = tip0 - normal * (head * 0.55f)
-        val path = Path().apply {
-            moveTo(tip.x, tip.y)
-            lineTo(b1.x, b1.y)
-            lineTo(b2.x, b2.y)
-            close()
+        val k = this.size.minDimension / 100f
+        val loop = Path().apply {
+            moveTo(50f * k, 50f * k)
+            cubicTo(58f * k, 32f * k, 88f * k, 32f * k, 88f * k, 50f * k)
+            cubicTo(88f * k, 68f * k, 58f * k, 68f * k, 50f * k, 50f * k)
+            cubicTo(42f * k, 32f * k, 12f * k, 32f * k, 12f * k, 50f * k)
+            cubicTo(12f * k, 68f * k, 42f * k, 68f * k, 50f * k, 50f * k)
         }
-        drawPath(path, color)
-        drawPath(path, color, style = Stroke(width = stroke * 0.3f, join = StrokeJoin.Round))
+        // The break sits between 8% and 18% of the way along the path (the top of the right loop).
+        val measure = PathMeasure().apply { setPath(loop, false) }
+        val length = measure.length
+        val rest = Path().also { measure.getSegment(0.18f * length, length, it, true) }
+        val lead = Path().also { measure.getSegment(0f, 0.08f * length, it, true) }
+        val stroke = Stroke(width = 9f * k, cap = StrokeCap.Round, join = StrokeJoin.Round)
+        drawPath(rest, color, style = stroke)
+        drawPath(lead, color, style = stroke)
+        drawCircle(accent, radius = 4.5f * k, center = Offset(72f * k, 36.5f * k))
     }
 }
 

@@ -37,7 +37,7 @@ fun OnboardingScreen(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ShadCard(brush = heroBrush()) {
-            LoopMark(size = 56.dp)
+            LoopMark(size = 72.dp)
             Spacer(Modifier.height(16.dp))
             Text(stringResource(R.string.onboarding_title), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(8.dp))

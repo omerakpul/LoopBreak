@@ -1,7 +1,11 @@
 package com.loopbreak.ui.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
@@ -40,6 +44,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -239,6 +244,19 @@ fun ShadBadge(
             Text(text, style = MaterialTheme.typography.labelMedium)
         }
     }
+}
+
+/** Pulsing placeholder block for content that is still loading. */
+@Composable
+fun ShadSkeleton(modifier: Modifier = Modifier, shape: Shape = RoundedCornerShape(8.dp)) {
+    val pulse = rememberInfiniteTransition(label = "skeleton")
+    val alpha by pulse.animateFloat(
+        initialValue = 0.45f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
+        label = "skeleton-alpha",
+    )
+    Box(modifier.clip(shape).background(Shad.colors.muted.copy(alpha = alpha)))
 }
 
 /** Thin progress bar: muted track, brand fill. */

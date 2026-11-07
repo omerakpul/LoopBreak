@@ -50,6 +50,8 @@ data class TodayUiState(
     val delta: DayDelta? = null,
     /** Daily goal from the settings; 0 = off. */
     val goal: Int = 0,
+    /** False until the very first sync has stored anything; drives the loading skeleton. */
+    val hasData: Boolean = false,
     /** The user's detection thresholds, for the score explanation. */
     val reOpenMinCount: Int = 2,
     val reOpenWindowMin: Int = 10,
@@ -90,6 +92,7 @@ class TodayViewModel @Inject constructor(
                 quickPeekMaxSec = u.quickPeekMaxSec,
             )
         }
+        .combine(repository.observeEventCount().map { it > 0 }.distinctUntilChanged()) { s, has -> s.copy(hasData = has) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayUiState())
 
     fun previousDay() {

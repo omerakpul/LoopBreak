@@ -15,7 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,6 +68,8 @@ private const val MAX_EVENT_ROWS = 50
 private fun formatTime(ms: Long): String =
     timeFormat.format(Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()))
 
+/** Pull down to refresh. The spinner only shows for a pull, not for the sync that runs on every resume. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodayScreen(
     contentPadding: PaddingValues,
@@ -73,8 +79,44 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
+    var pulled by remember { mutableStateOf(false) }
+    LaunchedEffect(sync.syncing) { if (!sync.syncing) pulled = false }
+    val pullState = rememberPullToRefreshState()
+
+    PullToRefreshBox(
+        isRefreshing = pulled,
+        onRefresh = {
+            pulled = true
+            onRefresh()
+        },
+        modifier = modifier.fillMaxSize(),
+        state = pullState,
+        // The header above the list is opaque, so the spinner has to sit below it.
+        indicator = {
+            PullToRefreshDefaults.Indicator(
+                state = pullState,
+                isRefreshing = pulled,
+                modifier = Modifier.align(Alignment.TopCenter).padding(top = contentPadding.calculateTopPadding()),
+            )
+        },
+    ) {
+        TodayContent(contentPadding, sync, onRefresh, onOpenApp, Modifier.fillMaxSize(), viewModel)
+    }
+}
+
+@Composable
+private fun TodayContent(
+    contentPadding: PaddingValues,
+    sync: SyncUiState,
+    onRefresh: () -> Unit,
+    onOpenApp: (String) -> Unit,
+    modifier: Modifier,
+    viewModel: TodayViewModel,
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var showScoreInfo by remember { mutableStateOf(false) }
+    // Placeholders only while the very first sync is still running; later syncs keep the content.
+    val showSkeleton = !state.loaded || (!state.hasData && sync.syncing)
 
     // The score counts up from zero when the screen opens or the day changes.
     var scoreTarget by remember { mutableIntStateOf(0) }
@@ -114,6 +156,11 @@ fun TodayScreen(
                     color = Shad.colors.destructive,
                 )
             }
+        }
+
+        if (showSkeleton) {
+            todaySkeleton()
+            return@LazyColumn
         }
 
         item {

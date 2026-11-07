@@ -67,6 +67,14 @@ Durum notu: kod yazıldı ve `./gradlew lintDebug assembleDebug testDebugUnitTes
 - [x] Haftalık özet bildirimi (`WeeklySummary`, `WeeklySchedule`): pazar 19:00, isteğe bağlı, "şimdi örnek gönder" düğmesi. Emülatörde doğrulandı.
 - [x] Birim testleri toplam 53
 
+## Aşama 7: Cilalama (yapıldı)
+
+- [x] "Skor nasıl hesaplanır?" alt sayfası: skor kartındaki "?" düğmesi, kullanıcının kendi eşikleriyle açıklar
+- [x] Giriş animasyonları: halka ve çubuk grafikler büyüyerek gelir, skor sayarak yükselir, ilerleme çubukları dolar (Android'in "animasyonları kaldır" ayarına uyar)
+- [x] Yükleme iskeleti (yalnızca hiç veri yokken ilk eşitlemede) ve aşağı çekip yenileme
+- [ ] Grafik çubuğuna dokununca değer ipucu
+- [ ] Geri bildirim mesajı (snackbar)
+
 ## Fikir havuzu (sıralanmamış)
 
 - Uygulama bazlı hedefler (örneğin bir uygulamanın döngülerini yarıya indir)

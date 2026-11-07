@@ -75,6 +75,7 @@
     <string name="score_info_quick_peek">A visit shorter than %1$d seconds. Each one adds 1.</string>
     <string name="score_info_ping_pong">You bounce between two apps (%1$d switches within %2$d minutes). Shown in the lists, but it does not add to the score.</string>
     <string name="score_info_footer">You can change these thresholds in Settings.</string>
+    <string name="loading">Loading…</string>
     <string name="open_app_details">Open details for %1$s</string>
     <string name="detail_recent">Recent loops</string>
     <string name="detail_empty">No loops for this app in this range.</string>

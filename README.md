@@ -20,6 +20,28 @@ Default thresholds, all adjustable in Settings:
 | Quick peek | A session shorter than 5 seconds |
 | Ping-pong | 3 switches between two apps within 5 minutes |
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/today-dark.png" width="200" alt="Today screen, dark theme"><br><sub>Today</sub></td>
+    <td align="center"><img src="docs/screenshots/history-dark.png" width="200" alt="History screen, dark theme"><br><sub>History</sub></td>
+    <td align="center"><img src="docs/screenshots/app-detail-dark.png" width="200" alt="Per-app detail screen"><br><sub>App detail</sub></td>
+    <td align="center"><img src="docs/screenshots/score-sheet-dark.png" width="200" alt="How the score works sheet"><br><sub>Score explained</sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/today-light.png" width="200" alt="Today screen, light theme"><br><sub>Light theme</sub></td>
+    <td align="center"><img src="docs/screenshots/history-light.png" width="200" alt="History screen, light theme"><br><sub>Light theme</sub></td>
+    <td align="center"><img src="docs/screenshots/settings-dark.png" width="200" alt="Settings screen"><br><sub>Settings</sub></td>
+    <td align="center"><img src="docs/screenshots/onboarding-light.png" width="200" alt="Usage access onboarding"><br><sub>First launch</sub></td>
+  </tr>
+</table>
+
+Captured on an emulator with demo data.
+
 ## Status
 
 The UI is available in English and Turkish (follows the phone language by default; Settings has a language picker on Android 13+). The app is feature complete: permission onboarding, data collection, loop detection, Today / History / per-app detail / Settings screens, a comparison with the previous day, an optional daily goal with a streak, and two optional notifications (a gentle nudge and a weekly summary). It has been verified end to end on an Android emulator. What is left is calibrating the thresholds against several days of real phone usage (Settings shows the session-length and return-gap distribution to help with that). Publishing to the Play Store is out of scope for now.

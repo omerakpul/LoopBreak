@@ -42,6 +42,7 @@ import com.loopbreak.ui.theme.Shad
 import java.time.format.DateTimeFormatter
 
 private val dayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM")
+private val readoutFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE dd.MM")
 private val ranges = listOf(7, 30)
 
 @Composable
@@ -112,6 +113,7 @@ fun HistoryScreen(
                     modifier = Modifier.fillMaxWidth(),
                     contentDescription = stringResource(R.string.history_trend_desc, state.rangeDays, state.total),
                     goal = state.goal,
+                    readouts = state.days.map { "${it.date.format(readoutFormat)} · ${it.score}" },
                 )
             }
         }

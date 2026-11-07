@@ -48,6 +48,7 @@ import java.time.format.DateTimeFormatter
 
 private val ranges = listOf(7, 30)
 private val dayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM")
+private val readoutFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE dd.MM")
 private val stampFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM HH:mm")
 private val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
@@ -116,6 +117,7 @@ fun AppDetailScreen(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     contentDescription = stringResource(R.string.history_trend_desc, state.rangeDays, state.total),
+                    readouts = state.days.map { "${it.date.format(readoutFormat)} · ${it.score}" },
                 )
             }
         }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.loopbreak.data.LoopRepository
 import com.loopbreak.data.usage.AppLabels
+import com.loopbreak.domain.detect.DayDelta
 import com.loopbreak.domain.detect.LoopScore
 import com.loopbreak.domain.detect.LoopScore.score
 import com.loopbreak.domain.model.LoopEvent
@@ -43,6 +44,8 @@ data class TodayUiState(
     val dayOffset: Int = 0,
     val day: LocalDate = LocalDate.now(),
     val score: Int = 0,
+    /** Compared with the day before; null when both days are empty. */
+    val delta: DayDelta? = null,
     val hourly: List<Int> = List(24) { 0 },
     val topApps: List<AppLoopStat> = emptyList(),
     val loops: List<LoopUi> = emptyList(),
@@ -65,7 +68,9 @@ class TodayViewModel @Inject constructor(
             val day = LocalDate.now(zone).plusDays(offset.toLong())
             val from = day.atStartOfDay(zone).toInstant().toEpochMilli()
             val to = day.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
-            repository.observeLoops(from, to).map { build(it, offset, day) }
+            val previousFrom = day.minusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
+            // One query for both days; the previous day only feeds the comparison badge.
+            repository.observeLoops(previousFrom, to).map { build(it, offset, day, from) }
         }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayUiState())
@@ -83,7 +88,9 @@ class TodayViewModel @Inject constructor(
         if (_dayOffset.value < 0) _dayOffset.value += 1
     }
 
-    private fun build(loops: List<LoopEvent>, offset: Int, day: LocalDate): TodayUiState {
+    private fun build(all: List<LoopEvent>, offset: Int, day: LocalDate, dayStart: Long): TodayUiState {
+        val loops = all.filter { it.startTime >= dayStart }
+        val previous = all.filter { it.startTime < dayStart }
         val hourly = IntArray(24)
         for (l in loops) {
             val hour = Instant.ofEpochMilli(l.startTime).atZone(zone).hour
@@ -115,6 +122,7 @@ class TodayViewModel @Inject constructor(
             dayOffset = offset,
             day = day,
             score = LoopScore.of(loops),
+            delta = DayDelta.of(LoopScore.of(loops), LoopScore.of(previous)),
             hourly = hourly.toList(),
             topApps = perApp,
             loops = rows,

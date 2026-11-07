@@ -16,7 +16,7 @@
     <string name="today_score_caption">re-opens + quick peeks</string>
     <string name="today_hourly">Loops by hour</string>
     <string name="today_top_apps">Apps with the most loops</string>
-    <string name="today_events">Today\'s loops</string>
+    <string name="today_events">Loops</string>
     <string name="today_empty">No loops today yet.</string>
     <string name="top_app_detail">%1$d re-opens · %2$d quick peeks · %3$d ping-pong</string>
 
@@ -41,6 +41,10 @@
     <string name="today_chart_desc">Loops-by-hour chart. Loop score %1$d. %2$s</string>
     <string name="history_trend_desc">Daily trend chart for the last %1$d days, total score %2$d</string>
 
+    <string name="delta_down">↓ %1$d%% vs. previous day</string>
+    <string name="delta_up_pct">↑ %1$d%% vs. previous day</string>
+    <string name="delta_up_abs">↑ %1$d vs. previous day</string>
+    <string name="delta_same">Same as the previous day</string>
     <string name="open_app_details">Open details for %1$s</string>
     <string name="detail_recent">Recent loops</string>
     <string name="detail_empty">No loops for this app in this range.</string>

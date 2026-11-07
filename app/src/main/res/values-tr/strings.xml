@@ -16,7 +16,7 @@
     <string name="today_score_caption">tekrar dönüş + refleks açma</string>
     <string name="today_hourly">Saate göre döngüler</string>
     <string name="today_top_apps">En çok döngüye giren uygulamalar</string>
-    <string name="today_events">Bugünkü döngüler</string>
+    <string name="today_events">Döngüler</string>
     <string name="today_empty">Bugün henüz döngü yok.</string>
     <string name="top_app_detail">%1$d dönüş · %2$d refleks · %3$d ping-pong</string>
 
@@ -41,6 +41,10 @@
     <string name="today_chart_desc">Saate göre döngü grafiği. Loop skoru %1$d. %2$s</string>
     <string name="history_trend_desc">Son %1$d günün günlük trend grafiği, toplam skor %2$d</string>
 
+    <string name="delta_down">↓ %%%1$d önceki güne göre</string>
+    <string name="delta_up_pct">↑ %%%1$d önceki güne göre</string>
+    <string name="delta_up_abs">↑ %1$d önceki güne göre</string>
+    <string name="delta_same">Önceki günle aynı</string>
     <string name="open_app_details">%1$s ayrıntılarını aç</string>
     <string name="detail_recent">Son döngüler</string>
     <string name="detail_empty">Bu uygulama için bu aralıkta döngü yok.</string>

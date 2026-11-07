@@ -25,6 +25,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.loopbreak.R
+import com.loopbreak.domain.detect.DayDelta
 import com.loopbreak.domain.model.LoopType
 import com.loopbreak.ui.SyncUiState
 import com.loopbreak.ui.components.CardTitle
@@ -100,11 +101,15 @@ fun TodayScreen(
 
         item {
             ShadCard(brush = heroBrush()) {
-                Text(
-                    stringResource(R.string.today_hourly),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Shad.colors.mutedForeground,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        stringResource(R.string.today_hourly),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Shad.colors.mutedForeground,
+                        modifier = Modifier.weight(1f),
+                    )
+                    state.delta?.let { DeltaBadge(it) }
+                }
                 Spacer(Modifier.height(8.dp))
                 val peak = state.hourly.indices.maxByOrNull { state.hourly[it] }
                     ?.takeIf { state.hourly[it] > 0 }
@@ -230,6 +235,26 @@ fun TodayScreen(
             }
         }
     }
+}
+
+/** "↓ 30% vs. previous day": teal when it got better, amber when it got worse. */
+@Composable
+private fun DeltaBadge(delta: DayDelta) {
+    val text = when {
+        delta.delta == 0 -> stringResource(R.string.delta_same)
+        delta.isBetter -> stringResource(R.string.delta_down, delta.percent ?: 0)
+        delta.percent != null -> stringResource(R.string.delta_up_pct, delta.percent)
+        else -> stringResource(R.string.delta_up_abs, delta.delta)
+    }
+    ShadBadge(
+        text = text,
+        variant = ShadBadgeVariant.Outline,
+        dot = when {
+            delta.isBetter -> Shad.colors.primary
+            delta.isWorse -> Shad.colors.warning
+            else -> Shad.colors.mutedForeground
+        },
+    )
 }
 
 @Composable

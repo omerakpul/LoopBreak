@@ -1,5 +1,6 @@
 package com.loopbreak.ui.history
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -44,6 +45,7 @@ private val ranges = listOf(7, 30)
 @Composable
 fun HistoryScreen(
     contentPadding: PaddingValues,
+    onOpenApp: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
@@ -119,7 +121,14 @@ fun HistoryScreen(
                         Spacer(Modifier.height(12.dp))
                         ShadSeparator()
                         Spacer(Modifier.height(12.dp))
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable(onClickLabel = stringResource(R.string.open_app_details, app.label)) {
+                                    onOpenApp(app.packageName)
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             Text(
                                 app.label,
                                 style = MaterialTheme.typography.titleSmall,

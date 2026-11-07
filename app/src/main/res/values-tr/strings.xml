@@ -41,6 +41,10 @@
     <string name="today_chart_desc">Saate göre döngü grafiği. Loop skoru %1$d. %2$s</string>
     <string name="history_trend_desc">Son %1$d günün günlük trend grafiği, toplam skor %2$d</string>
 
+    <string name="open_app_details">%1$s ayrıntılarını aç</string>
+    <string name="detail_recent">Son döngüler</string>
+    <string name="detail_empty">Bu uygulama için bu aralıkta döngü yok.</string>
+
     <string name="tab_today">Bugün</string>
     <string name="tab_history">Geçmiş</string>
     <string name="tab_settings">Ayarlar</string>

@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.stateIn
 
 data class DayScore(val date: LocalDate, val score: Int)
 
-data class TopApp(val label: String, val score: Int)
+data class TopApp(val packageName: String, val label: String, val score: Int)
 
 data class HistoryUiState(
     val rangeDays: Int = 7,
@@ -93,7 +93,7 @@ class HistoryViewModel @Inject constructor(
             topApps = perApp.entries
                 .sortedByDescending { it.value }
                 .take(10)
-                .map { TopApp(labels.label(it.key), it.value) },
+                .map { TopApp(it.key, labels.label(it.key), it.value) },
             total = total,
             averagePerDay = total / n.toFloat(),
         )

@@ -41,6 +41,10 @@
     <string name="today_chart_desc">Loops-by-hour chart. Loop score %1$d. %2$s</string>
     <string name="history_trend_desc">Daily trend chart for the last %1$d days, total score %2$d</string>
 
+    <string name="open_app_details">Open details for %1$s</string>
+    <string name="detail_recent">Recent loops</string>
+    <string name="detail_empty">No loops for this app in this range.</string>
+
     <string name="tab_today">Today</string>
     <string name="tab_history">History</string>
     <string name="tab_settings">Settings</string>

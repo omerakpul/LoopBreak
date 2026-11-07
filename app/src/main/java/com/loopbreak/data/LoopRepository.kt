@@ -46,6 +46,9 @@ class LoopRepository @Inject constructor(
     fun observeLoops(from: Long, to: Long): Flow<List<LoopEvent>> =
         loopDao.observeBetween(from, to).map { list -> list.map { it.toDomain() } }
 
+    fun observeLoopsForPackage(packageName: String, from: Long, to: Long): Flow<List<LoopEvent>> =
+        loopDao.observeForPackage(packageName, from, to).map { list -> list.map { it.toDomain() } }
+
     fun observeRecentEvents(limit: Int): Flow<List<UsageEventEntity>> = usageDao.observeRecent(limit)
 
     fun observeEventCount(): Flow<Int> = usageDao.observeCount()

@@ -1,5 +1,6 @@
 package com.loopbreak.ui.today
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -58,6 +59,7 @@ fun TodayScreen(
     contentPadding: PaddingValues,
     sync: SyncUiState,
     onRefresh: () -> Unit,
+    onOpenApp: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TodayViewModel = hiltViewModel(),
 ) {
@@ -157,17 +159,23 @@ fun TodayScreen(
                         Spacer(Modifier.height(12.dp))
                         ShadSeparator()
                         Spacer(Modifier.height(12.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Column(Modifier.weight(1f)) {
-                                Text(app.label, style = MaterialTheme.typography.titleSmall)
-                                MutedText(
-                                    stringResource(R.string.top_app_detail, app.returns, app.peeks, app.pingPongs),
-                                )
+                        Column(
+                            Modifier.clickable(
+                                onClickLabel = stringResource(R.string.open_app_details, app.label),
+                            ) { onOpenApp(app.packageName) },
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(app.label, style = MaterialTheme.typography.titleSmall)
+                                    MutedText(
+                                        stringResource(R.string.top_app_detail, app.returns, app.peeks, app.pingPongs),
+                                    )
+                                }
+                                ShadBadge(app.total.toString(), variant = ShadBadgeVariant.Default)
                             }
-                            ShadBadge(app.total.toString(), variant = ShadBadgeVariant.Default)
+                            Spacer(Modifier.height(8.dp))
+                            ShadProgress(app.total.toFloat() / top)
                         }
-                        Spacer(Modifier.height(8.dp))
-                        ShadProgress(app.total.toFloat() / top)
                     }
                 }
             }

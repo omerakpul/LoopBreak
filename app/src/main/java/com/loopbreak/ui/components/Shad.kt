@@ -282,7 +282,7 @@ fun ShadTabs(
                 border = if (active) BorderStroke(1.dp, c.border) else null,
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(title, style = MaterialTheme.typography.labelLarge)
+                    Text(title, style = MaterialTheme.typography.labelLarge, maxLines = 1)
                 }
             }
         }

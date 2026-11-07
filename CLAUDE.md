@@ -16,7 +16,7 @@ Kotlin, Jetpack Compose (Material 3), Room, WorkManager, DataStore, Coroutines/F
 - `domain` paketi Hilt'e de bağımlı olmasın; `@Inject constructor` yerine bağımlılıkları `data`/`ui` katmanındaki modüllerde bağla.
 - **Yedekleme kapalı kalmalı** (`allowBackup="false"` + boş yedekleme kuralları): kullanım verisi buluta gitmemeli.
 - **Erişilebilirlik:** Yalnızca glif içeren düğmelere (`ShadIconButton`) açıklama ver; grafiklere `describe(...)` ile `contentDescription` ekle.
-- **Metinler iki dilde:** varsayılan `values/strings.xml` İngilizce, `values-tr/strings.xml` Türkçe. Her yeni metni ikisine de ekle; dil listesi `res/xml/locales_config.xml`.
+- **Metinler iki dilde:** varsayılan `values/strings.xml` İngilizce, `values-tr/strings.xml` Türkçe. Her yeni metni ikisine de ekle; dil listesi `res/xml/locales_config.xml`. Ayarlar'daki dil seçici (`AppLanguage`) platformun uygulama dili API'sini kullanır ve yalnızca Android 13+ üzerinde görünür; yeni bir dil eklersen `AppLanguage.tags` ve sekme etiketlerini de güncelle.
 - **Bildirimler isteğe bağlı ve varsayılan kapalı** (nazik hatırlatma, haftalık özet). `POST_NOTIFICATIONS` yalnızca anahtar açılırken istenir.
 - Play Store şimdilik kapsam dışı. Sadece debug APK ile kendi cihazında çalışacak şekilde ilerle.
 - Aşamaları [docs/ROADMAP.md](docs/ROADMAP.md) sırasıyla takip et; bir aşama bittiğinde işaretle.

@@ -25,12 +25,14 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -45,6 +47,7 @@ import com.loopbreak.ui.components.ShadButtonVariant
 import com.loopbreak.ui.components.ShadCard
 import com.loopbreak.ui.components.ShadIconButton
 import com.loopbreak.ui.components.ShadSeparator
+import com.loopbreak.ui.components.ShadTabs
 import com.loopbreak.ui.screenPadding
 import com.loopbreak.ui.theme.Shad
 
@@ -77,6 +80,27 @@ fun SettingsScreen(
         contentPadding = screenPadding(contentPadding),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        // Per-app language needs Android 13+; older phones follow the system language.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            item {
+                val context = LocalContext.current
+                var language by remember { mutableIntStateOf(AppLanguage.currentIndex(context)) }
+                ShadCard {
+                    CardTitle(stringResource(R.string.settings_language_title))
+                    CardDescription(stringResource(R.string.settings_language_body))
+                    Spacer(Modifier.height(12.dp))
+                    ShadTabs(
+                        titles = listOf(stringResource(R.string.settings_language_system), "English", "Türkçe"),
+                        selected = language,
+                        onSelect = {
+                            language = it
+                            AppLanguage.select(context, it)
+                        },
+                    )
+                }
+            }
+        }
+
         item {
             ShadCard {
                 CardTitle(stringResource(R.string.settings_thresholds))

@@ -66,6 +66,9 @@
     <string name="weekly_delta_up_pct">↑ %1$d%% vs. last week</string>
     <string name="weekly_delta_up_abs">↑ %1$d vs. last week</string>
     <string name="weekly_delta_same">same as last week</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_body">Pick the language of the app. System default follows your phone.</string>
+    <string name="settings_language_system">System</string>
     <string name="open_app_details">Open details for %1$s</string>
     <string name="detail_recent">Recent loops</string>
     <string name="detail_empty">No loops for this app in this range.</string>

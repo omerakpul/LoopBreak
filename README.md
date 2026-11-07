@@ -22,7 +22,7 @@ Default thresholds, all adjustable in Settings:
 
 ## Status
 
-The UI is available in English and Turkish (follows the phone language, or the per-app language in Android settings). The app is feature complete: permission onboarding, data collection, loop detection, Today / History / per-app detail / Settings screens, a comparison with the previous day, an optional daily goal with a streak, and two optional notifications (a gentle nudge and a weekly summary). It has been verified end to end on an Android emulator. What is left is calibrating the thresholds against several days of real phone usage (Settings shows the session-length and return-gap distribution to help with that). Publishing to the Play Store is out of scope for now.
+The UI is available in English and Turkish (follows the phone language by default; Settings has a language picker on Android 13+). The app is feature complete: permission onboarding, data collection, loop detection, Today / History / per-app detail / Settings screens, a comparison with the previous day, an optional daily goal with a streak, and two optional notifications (a gentle nudge and a weekly summary). It has been verified end to end on an Android emulator. What is left is calibrating the thresholds against several days of real phone usage (Settings shows the session-length and return-gap distribution to help with that). Publishing to the Play Store is out of scope for now.
 
 ## Tech stack
 

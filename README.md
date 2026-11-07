@@ -72,6 +72,10 @@ Useful commands:
 
 Space Grotesk, Inter and JetBrains Mono are bundled as variable fonts (SIL Open Font License 1.1). Licenses are in [licenses/fonts](licenses/fonts).
 
+## License
+
+MIT, see [LICENSE](LICENSE). The bundled fonts have their own licenses (SIL OFL 1.1) in [licenses/fonts](licenses/fonts).
+
 ## Documentation
 
 The documents below are written in Turkish.

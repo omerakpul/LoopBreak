@@ -50,6 +50,9 @@ interface LoopEventDao {
     @Query("SELECT * FROM loop_events WHERE startTime >= :from AND startTime < :to ORDER BY startTime")
     fun observeBetween(from: Long, to: Long): Flow<List<LoopEventEntity>>
 
+    @Query("SELECT * FROM loop_events WHERE startTime >= :from AND startTime < :to ORDER BY startTime")
+    suspend fun between(from: Long, to: Long): List<LoopEventEntity>
+
     @Query(
         "SELECT * FROM loop_events WHERE (packageName = :packageName OR otherPackage = :packageName) " +
             "AND startTime >= :from AND startTime < :to ORDER BY startTime",

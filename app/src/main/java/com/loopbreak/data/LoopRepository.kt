@@ -12,6 +12,7 @@ import com.loopbreak.data.usage.UsageStatsReader
 import com.loopbreak.domain.detect.CalibrationStats
 import com.loopbreak.domain.detect.LoopDetector
 import com.loopbreak.domain.detect.SessionBuilder
+import com.loopbreak.domain.detect.WeeklySummary
 import com.loopbreak.domain.model.LoopEvent
 import java.time.Instant
 import java.time.ZoneId
@@ -45,6 +46,20 @@ class LoopRepository @Inject constructor(
 
     fun observeLoops(from: Long, to: Long): Flow<List<LoopEvent>> =
         loopDao.observeBetween(from, to).map { list -> list.map { it.toDomain() } }
+
+    /** The last 7 calendar days (today included) against the 7 before them. */
+    suspend fun weeklySummary(
+        now: Long = System.currentTimeMillis(),
+        zone: ZoneId = ZoneId.systemDefault(),
+    ): WeeklySummary = withContext(Dispatchers.IO) {
+        val today = Instant.ofEpochMilli(now).atZone(zone).toLocalDate()
+        val thisFrom = today.minusDays(6).atStartOfDay(zone).toInstant().toEpochMilli()
+        val lastFrom = today.minusDays(13).atStartOfDay(zone).toInstant().toEpochMilli()
+        WeeklySummary.of(
+            thisWeek = loopDao.between(thisFrom, now + 1).map { it.toDomain() },
+            lastWeek = loopDao.between(lastFrom, thisFrom).map { it.toDomain() },
+        )
+    }
 
     /** The first day LoopBreak has data for, so days before it are not counted as "perfect". */
     suspend fun firstTrackedDay(zone: ZoneId = ZoneId.systemDefault()): java.time.LocalDate? =

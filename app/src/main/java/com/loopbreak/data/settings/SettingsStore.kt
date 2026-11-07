@@ -28,6 +28,7 @@ data class UserSettings(
     val lastNotifiedAt: Long = 0L,
     /** Maximum loop score per day; 0 turns the goal off. */
     val dailyGoal: Int = 0,
+    val weeklySummaryEnabled: Boolean = false,
 ) {
     fun toConfig(): DetectionConfig = DetectionConfig(
         reOpenWindowMs = reOpenWindowMin * 60_000L,
@@ -50,6 +51,7 @@ class SettingsStore @Inject constructor(
         val notifications = booleanPreferencesKey("notifications_enabled")
         val lastNotifiedAt = longPreferencesKey("last_notified_at")
         val dailyGoal = intPreferencesKey("daily_goal")
+        val weeklySummary = booleanPreferencesKey("weekly_summary_enabled")
     }
 
     val settings: Flow<UserSettings> = context.dataStore.data.map { it.toUserSettings() }
@@ -66,6 +68,7 @@ class SettingsStore @Inject constructor(
             prefs[Keys.notifications] = next.notificationsEnabled
             prefs[Keys.lastNotifiedAt] = next.lastNotifiedAt
             prefs[Keys.dailyGoal] = next.dailyGoal
+            prefs[Keys.weeklySummary] = next.weeklySummaryEnabled
         }
     }
 
@@ -95,6 +98,7 @@ class SettingsStore @Inject constructor(
             notificationsEnabled = this[Keys.notifications] ?: d.notificationsEnabled,
             lastNotifiedAt = this[Keys.lastNotifiedAt] ?: d.lastNotifiedAt,
             dailyGoal = this[Keys.dailyGoal] ?: d.dailyGoal,
+            weeklySummaryEnabled = this[Keys.weeklySummary] ?: d.weeklySummaryEnabled,
         )
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.loopbreak.data.LoopRepository
 import com.loopbreak.data.notify.LoopNotifier
+import com.loopbreak.data.notify.WeeklyScheduler
 import com.loopbreak.data.settings.SettingsStore
 import com.loopbreak.data.settings.UserSettings
 import com.loopbreak.data.usage.AppLabels
@@ -32,6 +33,7 @@ class SettingsViewModel @Inject constructor(
     private val store: SettingsStore,
     private val repository: LoopRepository,
     private val notifier: LoopNotifier,
+    private val weekly: WeeklyScheduler,
     private val labels: AppLabels,
 ) : ViewModel() {
 
@@ -76,6 +78,16 @@ class SettingsViewModel @Inject constructor(
     fun setNotificationsEnabled(enabled: Boolean) {
         viewModelScope.launch { store.update { it.copy(notificationsEnabled = enabled) } }
     }
+
+    fun setWeeklySummaryEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            store.update { it.copy(weeklySummaryEnabled = enabled) }
+            if (enabled) weekly.schedule() else weekly.cancel()
+        }
+    }
+
+    /** Sends the weekly recap now so the user can see what it looks like. */
+    fun sendWeeklyPreview() = weekly.sendPreview()
 
     fun deleteAllData() {
         viewModelScope.launch { repository.deleteAllData() }

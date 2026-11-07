@@ -59,9 +59,18 @@ fun SettingsScreen(
     val s = state.settings
     var confirmDelete by remember { mutableStateOf(false) }
 
+    // Remembers which control asked for the notification permission, to continue once it is granted.
+    var permissionFor by remember { mutableStateOf(NotificationFeature.Nudge) }
     val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        viewModel.setNotificationsEnabled(granted)
+        if (granted) {
+            when (permissionFor) {
+                NotificationFeature.Nudge -> viewModel.setNotificationsEnabled(true)
+                NotificationFeature.Weekly -> viewModel.setWeeklySummaryEnabled(true)
+                NotificationFeature.Preview -> viewModel.sendWeeklyPreview()
+            }
+        }
     }
+    val needsPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !viewModel.canPostNotifications()
 
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -148,7 +157,8 @@ fun SettingsScreen(
                     Switch(
                         checked = s.notificationsEnabled,
                         onCheckedChange = { enable ->
-                            if (enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !viewModel.canPostNotifications()) {
+                            if (enable && needsPermission) {
+                                permissionFor = NotificationFeature.Nudge
                                 permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                             } else {
                                 viewModel.setNotificationsEnabled(enable)
@@ -164,6 +174,51 @@ fun SettingsScreen(
                         ),
                     )
                 }
+            }
+        }
+
+        item {
+            ShadCard {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        CardTitle(stringResource(R.string.settings_weekly_title))
+                        CardDescription(stringResource(R.string.settings_weekly_body))
+                    }
+                    Spacer(Modifier.width(12.dp))
+                    Switch(
+                        checked = s.weeklySummaryEnabled,
+                        onCheckedChange = { enable ->
+                            if (enable && needsPermission) {
+                                permissionFor = NotificationFeature.Weekly
+                                permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            } else {
+                                viewModel.setWeeklySummaryEnabled(enable)
+                            }
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Shad.colors.primaryForeground,
+                            checkedTrackColor = Shad.colors.primary,
+                            checkedBorderColor = Color.Transparent,
+                            uncheckedThumbColor = Shad.colors.foreground,
+                            uncheckedTrackColor = Shad.colors.input,
+                            uncheckedBorderColor = Color.Transparent,
+                        ),
+                    )
+                }
+                Spacer(Modifier.height(12.dp))
+                ShadButton(
+                    text = stringResource(R.string.settings_weekly_preview),
+                    onClick = {
+                        if (needsPermission) {
+                            permissionFor = NotificationFeature.Preview
+                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            viewModel.sendWeeklyPreview()
+                        }
+                    },
+                    variant = ShadButtonVariant.Outline,
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
         }
 
@@ -245,6 +300,8 @@ fun SettingsScreen(
         )
     }
 }
+
+private enum class NotificationFeature { Nudge, Weekly, Preview }
 
 @Composable
 private fun Stepper(label: String, value: Int, unit: String, onChange: (Int) -> Unit) {

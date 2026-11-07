@@ -57,10 +57,20 @@ Durum notu: kod yazıldı ve `./gradlew lintDebug assembleDebug testDebugUnitTes
 - [x] GitHub Actions CI (`.github/workflows/android.yml`): lint, derleme, test. Henüz çalıştırılmadı, ilk push'ta görülecek.
 - [x] Bildirim emülatörde uçtan uca doğrulandı
 
+## Aşama 6: Ürün genişletme (yapıldı)
+
+- [x] MIT lisansı
+- [x] İngilizce arayüz (varsayılan İngilizce, `values-tr` Türkçe; uygulama başına dil seçici)
+- [x] Uygulama detay ekranı: Bugün ve Geçmiş'teki uygulamaya dokununca skor, günlük trend, saat dağılımı, son döngüler
+- [x] Önceki günle karşılaştırma rozeti (`DayDelta`; büyük yüzdelerde düz fark)
+- [x] Günlük hedef: Bugün'de ilerleme çubuğu, Geçmiş'te hedefte kalınan günler ve seri (`GoalStreak`), grafikte hedef çizgisi. Takip başlamadan önceki günler sayılmaz.
+- [x] Haftalık özet bildirimi (`WeeklySummary`, `WeeklySchedule`): pazar 19:00, isteğe bağlı, "şimdi örnek gönder" düğmesi. Emülatörde doğrulandı.
+- [x] Birim testleri toplam 53
+
 ## Fikir havuzu (sıralanmamış)
 
-- Haftalık özet
+- Uygulama bazlı hedefler (örneğin bir uygulamanın döngülerini yarıya indir)
 - Döngü anında "nefes al" ekranı
-- Hedef koyma: "bu hafta Instagram döngülerini yarıya indir"
+- Bildirimde "1 saat sessize al" eylemi
 - Widget
 - Dışa aktarma (CSV)

@@ -55,6 +55,17 @@
     <string name="settings_goal_title">Daily goal</string>
     <string name="settings_goal_body">Keep your daily loop score at or below this number. 0 turns the goal off.</string>
     <string name="settings_goal_label">Maximum loop score</string>
+    <string name="settings_weekly_title">Weekly summary</string>
+    <string name="settings_weekly_body">Every Sunday evening: how your week went compared with the one before.</string>
+    <string name="settings_weekly_preview">Send a preview now</string>
+    <string name="weekly_channel">Weekly summary</string>
+    <string name="weekly_title">Your week in loops</string>
+    <string name="weekly_text">Loop score %1$d, %2$s. Most loops: %3$s.</string>
+    <string name="weekly_text_zero">No loops this week. Nice!</string>
+    <string name="weekly_delta_down">↓ %1$d%% vs. last week</string>
+    <string name="weekly_delta_up_pct">↑ %1$d%% vs. last week</string>
+    <string name="weekly_delta_up_abs">↑ %1$d vs. last week</string>
+    <string name="weekly_delta_same">same as last week</string>
     <string name="open_app_details">Open details for %1$s</string>
     <string name="detail_recent">Recent loops</string>
     <string name="detail_empty">No loops for this app in this range.</string>

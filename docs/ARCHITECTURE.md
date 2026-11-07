@@ -28,18 +28,19 @@ com.loopbreak
 │   ├── usage        UsageStatsReader, ExcludedPackages, AppLabels, SyncWorker (WorkManager)
 │   ├── db           Room: Database, Dao, Entity
 │   ├── settings     DataStore: eşikler, hariç liste, bildirim durumu
-│   ├── notify       LoopNotifier (isteğe bağlı nazik hatırlatma)
+│   ├── notify       LoopNotifier (nazik hatırlatma, haftalık özet), WeeklyScheduler, WeeklySummaryWorker
 │   └── LoopRepository   eşitleme, yeniden hesaplama, veri saklama süresi
 ├── domain
 │   ├── model        UsageEvent, Session, LoopEvent, LoopType
 │   └── detect       LoopDetector, SessionBuilder, LoopScore, CalibrationStats,
-│                    DetectionConfig (saf Kotlin, birim testli)
+│                    DayDelta, GoalStreak, WeeklySummary, DetectionConfig (saf Kotlin, birim testli)
 ├── di               Hilt modülü (Room)
 └── ui
     ├── onboarding
     ├── today        gün seçici, saat halkası, döngü listesi
     ├── history      trend, ısı haritası
     ├── settings     eşikler, eşik ipucu, hariç liste, bildirim, veri silme
+    ├── detail       uygulama detay ekranı
     ├── debug        ham olaylar
     ├── components   Shad bileşenleri, RadialHourChart, BarChart, Heatmap
     └── theme        shadcn token'ları, tipografi

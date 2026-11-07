@@ -51,6 +51,14 @@ Gün başına tek bir sayı: tespit edilen döngü olaylarının toplamı, ağı
 3. **Geçmiş**: 7/30 günlük trend, saat bazlı ısı haritası
 4. **Ayarlar**: eşikler, hariç tutulan uygulamalar, veriyi sil
 
+## Eklenen özellikler
+
+- **Uygulama detayı:** listedeki bir uygulamaya dokununca o uygulamanın skoru, trendi, saat dağılımı ve son döngüleri.
+- **Önceki günle karşılaştırma:** skor kartında "↓ %30 önceki güne göre".
+- **Günlük hedef:** en yüksek günlük skor (0 = kapalı); ilerleme çubuğu, hedefte kalınan günler ve seri.
+- **Haftalık özet:** pazar akşamı bildirimi, geçen haftayla karşılaştırma ve en çok döngüye giren uygulama.
+- **İngilizce ve Türkçe arayüz.**
+
 ## Başarı ölçütü (MVP)
 
 Kendi telefonumda bir gün kullandıktan sonra, ekranda gördüğüm döngülerin "evet, bunu gerçekten yapıyorum" dedirtmesi.

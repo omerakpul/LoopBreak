@@ -53,6 +53,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -73,7 +76,7 @@ import kotlin.math.sin
 @Composable
 fun heroBrush(): Brush {
     val c = Shad.colors
-    return Brush.verticalGradient(listOf(c.primary.copy(alpha = 0.10f), c.card))
+    return Brush.verticalGradient(listOf(c.primary.copy(alpha = 0.07f), c.card))
 }
 
 /** Card: quiet border, generous corners, no elevation. Pass [brush] for a tinted hero card. */
@@ -86,13 +89,19 @@ fun ShadCard(
     val c = Shad.colors
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(24.dp),
         color = c.card,
         contentColor = c.foreground,
         border = BorderStroke(1.dp, c.border),
     ) {
-        val inner = if (brush != null) Modifier.background(brush) else Modifier
-        Column(inner.padding(20.dp), content = content)
+        // Dark theme only: a whisper of light from the top so cards feel lit rather than flat.
+        // On a white card the same trick would just look dirty.
+        val light = if (c.card.luminance() < 0.5f) {
+            Brush.verticalGradient(listOf(lerp(c.card, c.foreground, 0.035f), c.card))
+        } else {
+            SolidColor(c.card)
+        }
+        Column(Modifier.background(brush ?: light).padding(22.dp), content = content)
     }
 }
 
@@ -124,7 +133,7 @@ fun MutedText(text: String, modifier: Modifier = Modifier, textAlign: TextAlign?
 
 @Composable
 fun ShadSeparator(modifier: Modifier = Modifier) {
-    HorizontalDivider(modifier = modifier, thickness = 1.dp, color = Shad.colors.border)
+    HorizontalDivider(modifier = modifier, thickness = 1.dp, color = Shad.colors.border.copy(alpha = 0.7f))
 }
 
 enum class ShadButtonVariant { Default, Outline, Ghost, Destructive }
@@ -148,13 +157,13 @@ fun ShadButton(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier.alpha(if (enabled) 1f else 0.5f),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(14.dp),
         color = container,
         contentColor = content,
         border = border,
     ) {
         Box(
-            Modifier.defaultMinSize(minHeight = 40.dp).padding(horizontal = 18.dp),
+            Modifier.defaultMinSize(minHeight = 42.dp).padding(horizontal = 20.dp),
             contentAlignment = Alignment.Center,
         ) {
             Text(text, style = MaterialTheme.typography.labelLarge)
@@ -175,7 +184,7 @@ fun ShadSheet(
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = c.card,
         contentColor = c.foreground,
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         dragHandle = {
             Box(
                 Modifier
@@ -210,8 +219,8 @@ private fun IconButtonSurface(
     Surface(
         onClick = onClick,
         enabled = enabled,
-        modifier = modifier.size(40.dp).alpha(if (enabled) 1f else 0.45f),
-        shape = RoundedCornerShape(12.dp),
+        modifier = modifier.size(42.dp).alpha(if (enabled) 1f else 0.45f),
+        shape = RoundedCornerShape(14.dp),
         color = c.control,
         contentColor = c.foreground,
         border = BorderStroke(1.dp, c.border),
@@ -277,7 +286,7 @@ fun ShadBadge(
 ) {
     val c = Shad.colors
     val (container, content, border) = when (variant) {
-        ShadBadgeVariant.Default -> Triple(c.primary, c.primaryForeground, null)
+        ShadBadgeVariant.Default -> Triple(c.primary.copy(alpha = 0.16f), c.primary, null)
         ShadBadgeVariant.Secondary -> Triple(c.secondary, c.foreground, null)
         ShadBadgeVariant.Outline -> Triple(Color.Transparent, c.foreground, BorderStroke(1.dp, c.border))
     }
@@ -383,18 +392,18 @@ fun ShadTabs(
     modifier: Modifier = Modifier,
 ) {
     val c = Shad.colors
-    val triggerShape = RoundedCornerShape(12.dp)
+    val triggerShape = RoundedCornerShape(14.dp)
     BoxWithConstraints(
         modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(18.dp))
             .background(c.muted)
             .padding(4.dp),
     ) {
         val slot = maxWidth / titles.size
         val offset by animateDpAsState(
             targetValue = slot * selected.coerceAtLeast(0),
-            animationSpec = tween(220, easing = FastOutSlowInEasing),
+            animationSpec = tween(300, easing = FastOutSlowInEasing),
             label = "tab-offset",
         )
         Box(

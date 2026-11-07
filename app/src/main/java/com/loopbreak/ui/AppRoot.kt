@@ -141,6 +141,9 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
     }
 }
 
+/** Vertical gap between the cards of a screen. */
+val screenSpacing = 14.dp
+
 /** Shared list padding: 16dp gutters, room for the top bar and the system bars. */
 fun screenPadding(outer: PaddingValues): PaddingValues = PaddingValues(
     start = 16.dp,

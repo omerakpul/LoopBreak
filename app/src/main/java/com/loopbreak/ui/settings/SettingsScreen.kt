@@ -49,6 +49,7 @@ import com.loopbreak.ui.components.ShadIconButton
 import com.loopbreak.ui.components.ShadSeparator
 import com.loopbreak.ui.components.ShadTabs
 import com.loopbreak.ui.screenPadding
+import com.loopbreak.ui.screenSpacing
 import com.loopbreak.ui.theme.Shad
 
 @Composable
@@ -78,7 +79,7 @@ fun SettingsScreen(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = screenPadding(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(screenSpacing),
     ) {
         // Per-app language needs Android 13+; older phones follow the system language.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

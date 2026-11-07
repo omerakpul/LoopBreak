@@ -45,8 +45,8 @@ private fun style(
 
 /** Light-handed scale: medium-weight headings, 14sp body, small medium labels. */
 val Typography = Typography(
-    displayLarge = style(DisplayFontFamily, 48, FontWeight.SemiBold, 52, -1.2),
-    displayMedium = style(DisplayFontFamily, 36, FontWeight.SemiBold, 40, -0.9),
+    displayLarge = style(DisplayFontFamily, 48, FontWeight.Medium, 52, -1.0),
+    displayMedium = style(DisplayFontFamily, 36, FontWeight.Medium, 40, -0.8),
     headlineMedium = style(DisplayFontFamily, 24, FontWeight.Medium, 30, -0.6),
     titleLarge = style(DisplayFontFamily, 20, FontWeight.Medium, 26, -0.4),
     titleMedium = style(DisplayFontFamily, 16, FontWeight.Medium, 22, -0.2),

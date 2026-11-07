@@ -37,6 +37,7 @@ import com.loopbreak.ui.components.ShadSeparator
 import com.loopbreak.ui.components.ShadTabs
 import com.loopbreak.ui.components.heroBrush
 import com.loopbreak.ui.screenPadding
+import com.loopbreak.ui.screenSpacing
 import com.loopbreak.ui.theme.Shad
 import java.time.format.DateTimeFormatter
 
@@ -57,7 +58,7 @@ fun HistoryScreen(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = screenPadding(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(screenSpacing),
     ) {
         item {
             ShadTabs(

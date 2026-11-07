@@ -40,6 +40,7 @@ import com.loopbreak.ui.components.ShadTabs
 import com.loopbreak.ui.components.describe
 import com.loopbreak.ui.components.heroBrush
 import com.loopbreak.ui.screenPadding
+import com.loopbreak.ui.screenSpacing
 import com.loopbreak.ui.theme.Shad
 import java.time.Instant
 import java.time.ZoneId
@@ -65,7 +66,7 @@ fun AppDetailScreen(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = screenPadding(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(screenSpacing),
     ) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {

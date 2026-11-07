@@ -50,7 +50,7 @@ fun Heatmap(
                 val cw = size.width / 24f
                 val ch = size.height / cells.size.coerceAtLeast(1)
                 val gap = 1.5.dp.toPx()
-                val radius = CornerRadius(2.dp.toPx())
+                val radius = CornerRadius(4.dp.toPx())
                 cells.forEachIndexed { r, row ->
                     row.forEachIndexed { h, v ->
                         val color: Color = if (v <= 0) empty else hot.copy(alpha = 0.25f + 0.75f * v / max)

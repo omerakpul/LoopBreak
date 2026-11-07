@@ -38,7 +38,7 @@ fun BarChart(
             val max = maxOf(values.maxOrNull() ?: 0, goal, 1)
             val slot = size.width / values.size.coerceAtLeast(1)
             val barWidth = slot * 0.65f
-            val radius = CornerRadius(barWidth / 4f)
+            val radius = CornerRadius(barWidth / 2f)
             val base = 4.dp.toPx()
             values.forEachIndexed { index, value ->
                 val x = index * slot + (slot - barWidth) / 2f

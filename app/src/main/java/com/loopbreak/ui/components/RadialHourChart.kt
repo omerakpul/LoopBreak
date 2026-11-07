@@ -49,9 +49,9 @@ fun RadialHourChart(
                 val k = size.width / REFERENCE_SIZE.toPx()
                 val mid = Offset(size.width / 2f, size.height / 2f)
                 val innerRadius = 80.dp.toPx() * k
-                val longest = 38.dp.toPx() * k
-                val shortest = 6.dp.toPx() * k
-                val stroke = 7.dp.toPx() * k
+                val longest = 34.dp.toPx() * k
+                val shortest = 5.dp.toPx() * k
+                val stroke = 5.5.dp.toPx() * k
                 val max = (values.maxOrNull() ?: 0).coerceAtLeast(1)
 
                 // A faint glow behind the ring so the score does not float on a flat card.

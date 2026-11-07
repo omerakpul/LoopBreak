@@ -56,6 +56,7 @@ import com.loopbreak.ui.components.ShadChevronButton
 import com.loopbreak.ui.components.ShadIconButton
 import com.loopbreak.ui.components.ShadSeparator
 import com.loopbreak.ui.screenPadding
+import com.loopbreak.ui.screenSpacing
 import com.loopbreak.ui.theme.Shad
 import java.time.Instant
 import java.time.ZoneId
@@ -133,7 +134,7 @@ private fun TodayContent(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = screenPadding(contentPadding),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(screenSpacing),
     ) {
         item {
             DayPicker(

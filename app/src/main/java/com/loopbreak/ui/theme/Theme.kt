@@ -43,13 +43,13 @@ private fun ShadColors.toMaterial(dark: Boolean): ColorScheme {
     )
 }
 
-/** Generous corners: cards 20dp, controls 12dp. */
+/** Generous corners: cards 24dp, controls 14dp. */
 private val ShadShapes = Shapes(
     extraSmall = RoundedCornerShape(6.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(20.dp),
+    small = RoundedCornerShape(10.dp),
+    medium = RoundedCornerShape(14.dp),
+    large = RoundedCornerShape(18.dp),
+    extraLarge = RoundedCornerShape(24.dp),
 )
 
 @Composable

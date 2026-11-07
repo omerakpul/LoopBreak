@@ -95,6 +95,20 @@ fun SettingsScreen(
             }
         }
 
+        item {
+            ShadCard {
+                CardTitle(stringResource(R.string.settings_goal_title))
+                CardDescription(stringResource(R.string.settings_goal_body))
+                Spacer(Modifier.height(8.dp))
+                Stepper(
+                    label = stringResource(R.string.settings_goal_label),
+                    value = s.dailyGoal,
+                    unit = "",
+                    onChange = viewModel::setDailyGoal,
+                )
+            }
+        }
+
         state.calibration?.takeIf { it.sessionCount > 0 }?.let { stats ->
             item {
                 ShadCard {

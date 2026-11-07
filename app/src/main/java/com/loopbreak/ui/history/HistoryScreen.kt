@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,6 +85,20 @@ fun HistoryScreen(
             }
         }
 
+        if (state.goal > 0 && state.trackedScores.isNotEmpty()) {
+            item {
+                ShadCard {
+                    CardTitle(stringResource(R.string.history_goal_title, state.goal))
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        stringResource(R.string.history_goal_days, state.withinGoal, state.trackedScores.size),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    MutedText(pluralStringResource(R.plurals.history_goal_streak, state.streak, state.streak))
+                }
+            }
+        }
+
         item {
             ShadCard {
                 CardTitle(stringResource(R.string.history_trend))
@@ -95,6 +110,7 @@ fun HistoryScreen(
                     axisLabels = listOfNotNull(first?.format(dayFormat), last?.format(dayFormat)),
                     modifier = Modifier.fillMaxWidth(),
                     contentDescription = stringResource(R.string.history_trend_desc, state.rangeDays, state.total),
+                    goal = state.goal,
                 )
             }
         }

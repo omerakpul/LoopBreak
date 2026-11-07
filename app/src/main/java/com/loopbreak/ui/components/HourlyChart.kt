@@ -13,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.unit.dp
+import com.loopbreak.ui.theme.Shad
 
 /** One bar per value, hand-drawn on a Canvas (see docs/ARCHITECTURE.md). */
 @Composable
@@ -22,13 +24,17 @@ fun BarChart(
     axisLabels: List<String>,
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
+    /** Draws a dashed goal line and colours bars above it; 0 = no goal. */
+    goal: Int = 0,
 ) {
     val bar = MaterialTheme.colorScheme.primary
     val track = MaterialTheme.colorScheme.surfaceVariant
+    val over = Shad.colors.warning
+    val goalLine = Shad.colors.mutedForeground
 
     Column(modifier.describe(contentDescription)) {
         Canvas(Modifier.fillMaxWidth().height(96.dp)) {
-            val max = (values.maxOrNull() ?: 0).coerceAtLeast(1)
+            val max = maxOf(values.maxOrNull() ?: 0, goal, 1)
             val slot = size.width / values.size.coerceAtLeast(1)
             val barWidth = slot * 0.65f
             val radius = CornerRadius(barWidth / 4f)
@@ -38,8 +44,18 @@ fun BarChart(
                 drawRoundRect(track, Offset(x, size.height - base), Size(barWidth, base), radius)
                 if (value > 0) {
                     val h = (size.height - base) * value / max + base
-                    drawRoundRect(bar, Offset(x, size.height - h), Size(barWidth, h), radius)
+                    drawRoundRect(if (goal in 1 until value) over else bar, Offset(x, size.height - h), Size(barWidth, h), radius)
                 }
+            }
+            if (goal > 0) {
+                val y = size.height - base - (size.height - base) * goal / max
+                drawLine(
+                    color = goalLine,
+                    start = Offset(0f, y),
+                    end = Offset(size.width, y),
+                    strokeWidth = 1.dp.toPx(),
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f)),
+                )
             }
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

@@ -45,6 +45,16 @@
     <string name="delta_up_pct">↑ %1$d%% vs. previous day</string>
     <string name="delta_up_abs">↑ %1$d vs. previous day</string>
     <string name="delta_same">Same as the previous day</string>
+    <string name="goal_progress">Daily goal: %1$d / %2$d</string>
+    <string name="history_goal_title">Daily goal: at most %1$d</string>
+    <string name="history_goal_days">Days within goal: %1$d of %2$d</string>
+    <plurals name="history_goal_streak">
+        <item quantity="one">Current streak: %1$d day</item>
+        <item quantity="other">Current streak: %1$d days</item>
+    </plurals>
+    <string name="settings_goal_title">Daily goal</string>
+    <string name="settings_goal_body">Keep your daily loop score at or below this number. 0 turns the goal off.</string>
+    <string name="settings_goal_label">Maximum loop score</string>
     <string name="open_app_details">Open details for %1$s</string>
     <string name="detail_recent">Recent loops</string>
     <string name="detail_empty">No loops for this app in this range.</string>

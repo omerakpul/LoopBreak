@@ -3,6 +3,7 @@ package com.loopbreak.ui.today
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.loopbreak.data.LoopRepository
+import com.loopbreak.data.settings.SettingsStore
 import com.loopbreak.data.usage.AppLabels
 import com.loopbreak.domain.detect.DayDelta
 import com.loopbreak.domain.detect.LoopScore
@@ -19,6 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -46,6 +48,8 @@ data class TodayUiState(
     val score: Int = 0,
     /** Compared with the day before; null when both days are empty. */
     val delta: DayDelta? = null,
+    /** Daily goal from the settings; 0 = off. */
+    val goal: Int = 0,
     val hourly: List<Int> = List(24) { 0 },
     val topApps: List<AppLoopStat> = emptyList(),
     val loops: List<LoopUi> = emptyList(),
@@ -55,6 +59,7 @@ data class TodayUiState(
 @HiltViewModel
 class TodayViewModel @Inject constructor(
     repository: LoopRepository,
+    settings: SettingsStore,
     private val labels: AppLabels,
 ) : ViewModel() {
 
@@ -73,6 +78,7 @@ class TodayViewModel @Inject constructor(
             repository.observeLoops(previousFrom, to).map { build(it, offset, day, from) }
         }
         .flowOn(Dispatchers.Default)
+        .combine(settings.settings.map { it.dailyGoal }.distinctUntilChanged()) { s, goal -> s.copy(goal = goal) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TodayUiState())
 
     fun previousDay() {

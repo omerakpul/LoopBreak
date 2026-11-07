@@ -64,6 +64,11 @@ class SettingsViewModel @Inject constructor(
     fun setReOpenWindowMin(value: Int) = change { it.copy(reOpenWindowMin = value.coerceIn(1, 60)) }
     fun setQuickPeekMaxSec(value: Int) = change { it.copy(quickPeekMaxSec = value.coerceIn(1, 30)) }
 
+    /** The goal only affects what is shown, so nothing needs recomputing. */
+    fun setDailyGoal(value: Int) {
+        viewModelScope.launch { store.update { it.copy(dailyGoal = value.coerceIn(0, 100)) } }
+    }
+
     fun setExcluded(packageName: String, excluded: Boolean) = change {
         it.copy(excludedPackages = if (excluded) it.excludedPackages + packageName else it.excludedPackages - packageName)
     }

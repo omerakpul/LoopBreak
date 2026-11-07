@@ -134,7 +134,21 @@ fun TodayScreen(
                         )
                     }
                 }
-                Spacer(Modifier.height(4.dp))
+                if (state.goal > 0) {
+                    val over = state.score > state.goal
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        stringResource(R.string.goal_progress, state.score, state.goal),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = if (over) Shad.colors.warning else Shad.colors.mutedForeground,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    ShadProgress(
+                        fraction = state.score.toFloat() / state.goal,
+                        color = if (over) Shad.colors.warning else Shad.colors.primary,
+                    )
+                }
+                Spacer(Modifier.height(8.dp))
                 MutedText(
                     insight,
                     modifier = Modifier.fillMaxWidth(),

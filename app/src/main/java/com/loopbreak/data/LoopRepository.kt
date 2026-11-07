@@ -46,6 +46,10 @@ class LoopRepository @Inject constructor(
     fun observeLoops(from: Long, to: Long): Flow<List<LoopEvent>> =
         loopDao.observeBetween(from, to).map { list -> list.map { it.toDomain() } }
 
+    /** The first day LoopBreak has data for, so days before it are not counted as "perfect". */
+    suspend fun firstTrackedDay(zone: ZoneId = ZoneId.systemDefault()): java.time.LocalDate? =
+        usageDao.earliest()?.let { Instant.ofEpochMilli(it).atZone(zone).toLocalDate() }
+
     fun observeLoopsForPackage(packageName: String, from: Long, to: Long): Flow<List<LoopEvent>> =
         loopDao.observeForPackage(packageName, from, to).map { list -> list.map { it.toDomain() } }
 

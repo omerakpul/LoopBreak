@@ -53,7 +53,8 @@ fun RadialHourChart(
                 val max = (values.maxOrNull() ?: 0).coerceAtLeast(1)
 
                 fun direction(hour: Int): Offset {
-                    val angle = Math.toRadians(-90.0 + hour * 15.0 + 7.5)
+                    // Like a clock face: the hour mark itself sits on the axis (00 top, 06 right, 12 bottom, 18 left).
+                    val angle = Math.toRadians(-90.0 + hour * 15.0)
                     return Offset(cos(angle).toFloat(), sin(angle).toFloat())
                 }
 

@@ -37,7 +37,7 @@ The UI is available in English and Turkish (follows the phone language by defaul
 | Async | Coroutines + Flow |
 | Navigation | Navigation Compose |
 | Charts | Hand-drawn with Compose Canvas |
-| Design | shadcn/ui look (zinc palette) with a teal brand colour, a 24-hour radial chart, Space Grotesk + Inter + JetBrains Mono bundled offline |
+| Design | Clean card-based look in neutral tones with a teal brand colour, a 24-hour radial chart, Space Grotesk + Inter + JetBrains Mono bundled offline |
 | DI | Hilt (`hilt-navigation-compose`, `hilt-work`) |
 | Min SDK | 26 (Android 8.0) |
 

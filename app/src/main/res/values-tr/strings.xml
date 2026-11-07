@@ -117,6 +117,9 @@
     <string name="settings_delete">Tüm veriyi sil</string>
     <string name="settings_delete_confirm">Kaydedilen tüm olaylar ve döngüler silinir. Bundan sonrası yeniden kaydedilmeye başlar.</string>
     <string name="settings_delete_yes">Sil</string>
+    <string name="snackbar_deleted">Tüm veriler silindi</string>
+    <string name="snackbar_preview_sent">Örnek gönderildi</string>
+    <string name="snackbar_resync">Sıfırlanıyor, yeniden eşitleniyor</string>
 
     <string name="notification_channel">Döngü hatırlatmaları</string>
     <string name="notification_title">Aynı yere mi dönüyorsun?</string>

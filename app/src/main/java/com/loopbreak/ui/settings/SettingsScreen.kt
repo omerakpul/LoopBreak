@@ -42,6 +42,7 @@ import com.loopbreak.R
 import com.loopbreak.ui.components.CardDescription
 import com.loopbreak.ui.components.CardTitle
 import com.loopbreak.ui.components.MutedText
+import com.loopbreak.ui.components.LocalToaster
 import com.loopbreak.ui.components.ShadButton
 import com.loopbreak.ui.components.ShadButtonVariant
 import com.loopbreak.ui.components.ShadCard
@@ -62,6 +63,9 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val s = state.settings
     var confirmDelete by remember { mutableStateOf(false) }
+    val toaster = LocalToaster.current
+    val deletedMessage = stringResource(R.string.snackbar_deleted)
+    val previewMessage = stringResource(R.string.snackbar_preview_sent)
 
     // Remembers which control asked for the notification permission, to continue once it is granted.
     var permissionFor by remember { mutableStateOf(NotificationFeature.Nudge) }
@@ -70,7 +74,10 @@ fun SettingsScreen(
             when (permissionFor) {
                 NotificationFeature.Nudge -> viewModel.setNotificationsEnabled(true)
                 NotificationFeature.Weekly -> viewModel.setWeeklySummaryEnabled(true)
-                NotificationFeature.Preview -> viewModel.sendWeeklyPreview()
+                NotificationFeature.Preview -> {
+                    viewModel.sendWeeklyPreview()
+                    toaster?.show(previewMessage)
+                }
             }
         }
     }
@@ -239,6 +246,7 @@ fun SettingsScreen(
                             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         } else {
                             viewModel.sendWeeklyPreview()
+                            toaster?.show(previewMessage)
                         }
                     },
                     variant = ShadButtonVariant.Outline,
@@ -311,6 +319,7 @@ fun SettingsScreen(
                     onClick = {
                         confirmDelete = false
                         viewModel.deleteAllData()
+                        toaster?.show(deletedMessage)
                     },
                     variant = ShadButtonVariant.Destructive,
                 )

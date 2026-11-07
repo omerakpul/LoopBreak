@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,8 +31,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.loopbreak.R
+import com.loopbreak.ui.components.LocalToaster
 import com.loopbreak.ui.components.LoopMark
+import com.loopbreak.ui.components.ShadSnackbarHost
 import com.loopbreak.ui.components.ShadTabs
+import com.loopbreak.ui.components.Toaster
 import com.loopbreak.ui.debug.DebugScreen
 import com.loopbreak.ui.detail.AppDetailScreen
 import com.loopbreak.ui.history.HistoryScreen
@@ -61,13 +68,18 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
         return
     }
 
+    val snackbarHost = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val toaster = remember { Toaster(snackbarHost, scope) }
     val navController = rememberNavController()
     val backStack by navController.currentBackStackEntryAsState()
     val selectedTab = tabRoutes.indexOf(backStack?.destination?.route)
+    val resyncMessage = stringResource(R.string.snackbar_resync)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Shad.colors.background,
+        snackbarHost = { ShadSnackbarHost(snackbarHost) },
         topBar = {
             // Always reserves the status bar; the header is only shown on the three main screens.
             Column(Modifier.background(Shad.colors.background).statusBarsPadding()) {
@@ -100,6 +112,7 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
             }
         },
     ) { padding ->
+        CompositionLocalProvider(LocalToaster provides toaster) {
         NavHost(navController = navController, startDestination = ROUTE_TODAY) {
             composable(ROUTE_TODAY) {
                 TodayScreen(
@@ -134,9 +147,13 @@ fun AppRoot(viewModel: MainViewModel = hiltViewModel()) {
                 DebugScreen(
                     contentPadding = padding,
                     onBack = { navController.popBackStack() },
-                    onReset = viewModel::resetAndResync,
+                    onReset = {
+                        viewModel.resetAndResync()
+                        toaster.show(resyncMessage)
+                    },
                 )
             }
+        }
         }
     }
 }

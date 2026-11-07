@@ -74,7 +74,7 @@ Durum notu: kod yazıldı ve `./gradlew lintDebug assembleDebug testDebugUnitTes
 - [x] Yükleme iskeleti (yalnızca hiç veri yokken ilk eşitlemede) ve aşağı çekip yenileme
 - [x] Yumuşatma turu: tonlu nötr renkler, sessiz kenarlıklar, daha yuvarlak köşeler ve boşluk, hafif yazı ağırlıkları, çizilmiş şevron okları, kayan sekme göstergesi, halkanın arkasında yumuşak ışıma
 - [x] Grafik çubuğuna dokununca değer ipucu (geçmiş ve uygulama trendi, saat grafiği)
-- [ ] Geri bildirim mesajı (snackbar)
+- [x] Geri bildirim mesajı (snackbar): veri silindi, örnek gönderildi, yeniden eşitleme
 
 ## Fikir havuzu (sıralanmamış)
 

@@ -117,6 +117,9 @@
     <string name="settings_delete">Delete all data</string>
     <string name="settings_delete_confirm">All stored events and loops are deleted. Recording starts over from now.</string>
     <string name="settings_delete_yes">Delete</string>
+    <string name="snackbar_deleted">All data deleted</string>
+    <string name="snackbar_preview_sent">Preview sent</string>
+    <string name="snackbar_resync">Resetting and syncing again</string>
 
     <string name="notification_channel">Loop nudges</string>
     <string name="notification_title">Going back to the same place?</string>
